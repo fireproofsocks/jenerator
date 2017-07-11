@@ -1,0 +1,15 @@
+#!/usr/bin/env php
+<?php
+
+$container = require __DIR__.'/bootstrap/app.php';
+
+use Symfony\Component\Console\Application;
+
+$application = new Application();
+
+// ... register commands
+$application->add(new \Jenerator\Command\ShowExampleJsonFromSchemaCommand($container));
+$application->add(new \Jenerator\Command\CreateExampleJsonFilesFromSchemaCommand($container));
+$application->add(new \Jenerator\Command\AppendExamplesToSchemaCommand($container));
+
+$application->run();
