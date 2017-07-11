@@ -11,6 +11,7 @@ use Jenerator\Generators\GeneratorInterface;
 use Jenerator\Generators\IntegerGenerator;
 use Jenerator\Generators\NullGenerator;
 use Jenerator\Generators\NumberGenerator;
+use Jenerator\Generators\ObjectGenerator;
 use Jenerator\Generators\StringGenerator;
 use Jenerator\JsonDecoder\JsonDecoder;
 use Jenerator\JsonDecoder\JsonDecoderInterface;
@@ -98,7 +99,7 @@ class ServiceContainer implements ServiceContainerInterface
         };
         // Generator Classes follows convention: generator_{type}
         $this->container['generator_object'] = function () {
-            //return new BooleanGenerator();
+            return new ObjectGenerator($this->make(JsonSchemaAccessorBuilderInterface::class), $this->make(GeneratorBuilderInterface::class));
         };
         $this->container['generator_array'] = function () {
             return new ArrayGenerator($this->make(JsonSchemaAccessorInterface::class), $this->make(GeneratorBuilderInterface::class));

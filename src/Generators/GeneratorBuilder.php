@@ -8,8 +8,15 @@ use Jenerator\ServiceContainerInterface;
 
 class GeneratorBuilder implements GeneratorBuilderInterface
 {
+    /**
+     * @var ServiceContainerInterface
+     */
     protected $serviceContainer;
 
+    /**
+     * Valid data types (per JSON Schema)
+     * @var array
+     */
     protected $validTypes = ['object', 'array', 'string', 'number', 'integer', 'boolean', 'null'];
 
     public function __construct(ServiceContainerInterface $serviceContainer)

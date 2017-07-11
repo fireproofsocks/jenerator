@@ -26,14 +26,14 @@ class ArrayGenerator implements GeneratorInterface
     /**
      * @inheritdoc
      */
-    public function getValue(array $schema)
+    public function getGeneratedFakeValue(JsonSchemaAccessorInterface $schemaAccessor)
     {
         // TODO: Implement getValue() method.
         $output = [];
 
         $this->schemaAccessor->factory($schema);
 
-        if ($items = $this->schemaAccessor->getItems()) {
+        if ($items = $schemaAccessor->getItems()) {
             // Is tuple?
         }
 
@@ -41,7 +41,7 @@ class ArrayGenerator implements GeneratorInterface
         // maxItems
         for ($i = 0; $i < 3; $i++ ) {
 
-            $output[] = $this->generatorBuilder->getGenerator('string')->getValue([]);
+            $output[] = $this->generatorBuilder->getGenerator('string')->getGeneratedFakeValue([]);
         }
         // additionalItems
 

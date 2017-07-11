@@ -1,0 +1,6 @@
+{
+  "description": "This should return an integer between 1 and 10 (inclusive)",
+  "type": "integer",
+  "minimum": 1,
+  "maximum": 10
+}

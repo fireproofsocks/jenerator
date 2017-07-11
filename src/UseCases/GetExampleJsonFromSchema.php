@@ -33,6 +33,6 @@ class GetExampleJsonFromSchema implements GetExampleJsonFromSchemaInterface
 
         $generator = $this->generatorBuilder->getGenerator($accessor);
 
-        return $generator->getValue($schema);
+        return $generator->getGeneratedFakeValue($accessor);
     }
 }

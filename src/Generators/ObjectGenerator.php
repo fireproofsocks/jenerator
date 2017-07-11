@@ -4,7 +4,6 @@ namespace Jenerator\Generators;
 
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorBuilderInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
-use Jenerator\JsonSchemaAccessor\JsonSchemaV4Accessor;
 
 class ObjectGenerator implements GeneratorInterface
 {
@@ -27,22 +26,22 @@ class ObjectGenerator implements GeneratorInterface
     /**
      * @inheritdoc
      */
-    public function getValue(array $schema)
+    public function getGeneratedFakeValue(JsonSchemaAccessorInterface $schemaAccessor)
     {
         $obj = new \stdClass();
 
-        // TODO: Implement getValue() method.
-        $accessor = $this->schemaAccessorBuilder->getJsonSchemaAccessor($schema);
+        // TODO: patternProperties, minProperties, maxProperties, additionalProperties, dependencies, required
 
-        // TODO: patternProperties
-
-        if ($properties = $accessor->getProperties()) {
+        if ($properties = $schemaAccessor->getProperties()) {
             foreach ($properties as $property_name => $sub_schema) {
                 $subAccessor = $this->schemaAccessorBuilder->getJsonSchemaAccessor($sub_schema);
-                $generator = $this->generatorBuilder->getGenerator($sub_schema->getType());
+                $generator = $this->generatorBuilder->getGenerator($subAccessor);
+                $obj->{$property_name} = $generator->getGeneratedFakeValue($subAccessor);
                 //$obj->{$key} =
             }
         }
+        // required
+        // additionalProperties
 
         return $obj;
     }

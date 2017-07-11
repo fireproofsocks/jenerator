@@ -1,0 +1,7 @@
+{
+  "description": "This should always return a 1",
+  "type": "integer",
+  "minimum": 0,
+  "maximum": 1,
+  "exclusiveMinimum": true
+}

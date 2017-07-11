@@ -2,31 +2,56 @@
 
 namespace Jenerator\Generators;
 
+use Faker\Factory;
+use Faker\Generator;
 use Faker\Provider\DateTime;
 use Faker\Provider\Internet;
 use Faker\Provider\Lorem;
+use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
 
 class StringGenerator implements GeneratorInterface
 {
     /**
+     * @var JsonSchemaAccessorInterface
+     */
+    protected $schemaAccessor;
+
+    /**
      * @inheritdoc
      */
-    public function getValue(array $schema)
+    public function getGeneratedFakeValue(JsonSchemaAccessorInterface $schemaAccessor, $locale = 'en_US')
     {
-        // consider format
+        $this->schemaAccessor = $schemaAccessor;
+
+        // TODO: pattern (!!!), minLength, maxLength
+        // TODO: support for locale, e.g. default is en_US
         // $maxNbChars = 200
-        return Lorem::text();
-        // TODO: Implement getValue() method.
+        $format = $this->schemaAccessor->getFormat();
 
-        // return Internet::localIpv4();
+        // @see https://spacetelescope.github.io/understanding-json-schema/reference/string.html
+        switch ($format) {
+            case 'date-time':
+                $string = DateTime::iso8601();
+                break;
+            case 'email':
+                $string = (new Internet(Factory::create($locale)))->email();
+                break;
+            case 'hostname':
+                $string = (new Internet(Factory::create($locale)))->domainName();
+                break;
+            case 'ipv4':
+                $string = (new Internet(Factory::create($locale)))->ipv4();
+                break;
+            case 'ipv6':
+                $string = (new Internet(Factory::create($locale)))->ipv6();
+                break;
+            case 'uri':
+                $string = (new Internet(Factory::create($locale)))->url();
+                break;
+            default:
+                $string = Lorem::text();
+        }
 
-        //$internet = new Internet();
-        //return $internet->ipv6();
-
-        //return $internet->email();
-
-        //$max = 'now';
-        //DateTime::iso8601();
+        return $string;
     }
-
 }

@@ -1,0 +1,7 @@
+{
+  "description": "This should always return a 6",
+  "type": "integer",
+  "minimum": 1,
+  "maximum": 10,
+  "multipleOf": 6
+}

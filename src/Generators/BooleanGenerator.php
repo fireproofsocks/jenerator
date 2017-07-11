@@ -3,13 +3,14 @@
 namespace Jenerator\Generators;
 
 use Faker\Provider\Miscellaneous;
+use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
 
 class BooleanGenerator implements GeneratorInterface
 {
     /**
      * @inheritdoc
      */
-    public function getValue(array $schema)
+    public function getGeneratedFakeValue(JsonSchemaAccessorInterface $schemaAccessor)
     {
         return Miscellaneous::boolean();
     }

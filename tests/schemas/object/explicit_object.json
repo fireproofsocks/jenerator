@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "my_null": {"type": "null"},
+    "my_boolean": {"type": "boolean"},
+    "my_integer": {"type": "integer"},
+    "my_number": {"type": "number"},
+    "my_string": {"type": "string"}
+  },
+  "additionalProperties": false
+}
