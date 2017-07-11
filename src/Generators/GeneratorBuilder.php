@@ -3,6 +3,7 @@
 namespace Jenerator\Generators;
 
 use Jenerator\Exceptions\InvalidTypeException;
+use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
 use Jenerator\ServiceContainerInterface;
 
 class GeneratorBuilder implements GeneratorBuilderInterface
@@ -19,10 +20,11 @@ class GeneratorBuilder implements GeneratorBuilderInterface
     /**
      * @inheritdoc
      */
-    public function getGenerator($type)
+    public function getGenerator(JsonSchemaAccessorInterface $jsonSchemaAccessor)
     {
-        // TODO: input should be schema.
+        // TODO: de-reference
         // TODO: evaluate oneOf, anyOf
+        $type = $jsonSchemaAccessor->getType();
 
         if (!$type || is_array($type)) {
             $type = $this->getRandomType($type);

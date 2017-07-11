@@ -43,6 +43,7 @@ class JsonSchemaAccessorBuilder implements JsonSchemaAccessorBuilderInterface
         }
 
         return $schemaAccessor->hydrate($schema);
+        // TODO: dereference
     }
 
 }

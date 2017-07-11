@@ -65,7 +65,7 @@ class ServiceContainer implements ServiceContainerInterface
             return new CreateExampleJsonFilesFromSchema();
         };
         $this->container[GetExampleJsonFromSchemaInterface::class] = function () {
-            return new GetExampleJsonFromSchema();
+            return new GetExampleJsonFromSchema($this->make(JsonSchemaAccessorBuilderInterface::class), $this->make(GeneratorBuilderInterface::class));
         };
 
         // Services

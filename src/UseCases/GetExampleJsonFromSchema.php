@@ -2,6 +2,9 @@
 
 namespace Jenerator\UseCases;
 
+use Jenerator\Generators\GeneratorBuilderInterface;
+use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorBuilderInterface;
+
 class GetExampleJsonFromSchema implements GetExampleJsonFromSchemaInterface
 {
     protected $jsonDecoder;
@@ -10,30 +13,26 @@ class GetExampleJsonFromSchema implements GetExampleJsonFromSchemaInterface
     protected $generatorBuilder;
     protected $transformersContainer;
 
+    /**
+     * GetExampleJsonFromSchema constructor.
+     * @param JsonSchemaAccessorBuilderInterface $schemaAccessorBuilder
+     * @param GeneratorBuilderInterface $generatorBuilder
+     */
+    public function __construct(JsonSchemaAccessorBuilderInterface $schemaAccessorBuilder, GeneratorBuilderInterface $generatorBuilder)
+    {
+        $this->schemaAccessorBuilder = $schemaAccessorBuilder;
+        $this->generatorBuilder = $generatorBuilder;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getExampleJsonFromSchema(array $schema)
     {
         $accessor = $this->schemaAccessorBuilder->getJsonSchemaAccessor($schema);
 
-        // resolve $ref
-        // allOf?? is there a schema hiding in pieces?
+        $generator = $this->generatorBuilder->getGenerator($accessor);
 
-        if ($allOf = $accessor->getAllOf()) {
-            // merge schema
-            $merged = [];
-            $accessor->hydrate($merged);
-        }
-
-        $generator = $this->generatorBuilder->getGenerator($accessor->getType());
-
-        $value = $generator->getValue($schema);
-
-        // transform value??
-        // return encoded value
-
-    }
-
-    public function getExampleJsonFromSchemaFile($filename)
-    {
-        return $this->getExampleJsonFromSchema($this->jsonDecoder->decodeFile($filename));
+        return $generator->getValue($schema);
     }
 }

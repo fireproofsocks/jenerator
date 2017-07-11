@@ -2,6 +2,8 @@
 
 namespace Jenerator\Generators;
 
+use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
+
 /**
  * Interface GeneratorBuilderInterface
  *
@@ -11,5 +13,10 @@ namespace Jenerator\Generators;
  */
 interface GeneratorBuilderInterface
 {
-    public function getGenerator($type);
+    /**
+     * Given a loaded JSON Schema Accessor, this returns a generator that can generate sample data for the given schema.
+     * @param JsonSchemaAccessorInterface $jsonSchemaAccessor
+     * @return GeneratorInterface
+     */
+    public function getGenerator(JsonSchemaAccessorInterface $jsonSchemaAccessor);
 }

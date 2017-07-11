@@ -5,8 +5,10 @@ namespace Jenerator\Command;
 use Jenerator\Generators\GeneratorBuilderInterface;
 use Jenerator\Jenerator;
 use Jenerator\JsonDecoder\JsonDecoderInterface;
+use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorBuilderInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
 use Jenerator\ServiceContainerInterface;
+use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -36,13 +38,31 @@ class ShowExampleJsonFromSchemaCommand extends Command
     {
 
 
-        //$output->writeln($input->getArgument('schema'));
+        $output->writeln($input->getArgument('schema'));
 
+        $useCase = $this->serviceContainer->make(GetExampleJsonFromSchemaInterface::class);
+
+        $decoder = $this->serviceContainer->make(JsonDecoderInterface::class);
+
+        $schema = $decoder->decodeFile($input->getArgument('schema'));
+
+        $example = $useCase->getExampleJsonFromSchema($schema);
+
+        $output->writeln(json_encode($example));
+        return;
         // ...
-        $j = new Jenerator($this->serviceContainer->make(JsonDecoderInterface::class), $this->serviceContainer->make(JsonSchemaAccessorInterface::class), $this->serviceContainer->make(GeneratorBuilderInterface::class));
+        $decoder = $this->serviceContainer->make(JsonDecoderInterface::class);
 
-        $x = $j->main($input->getArgument('schema'));
+        $schema = $decoder->decodeFile($input->getArgument('schema'));
 
-        $output->writeln(json_encode($x));
+        $accessor = $this->serviceContainer->make(JsonSchemaAccessorBuilderInterface::class)->getJsonSchemaAccessor($schema);
+
+        //$this->serviceContainer->make(GeneratorBuilderInterface::class)
+
+//        $j = new Jenerator($this->serviceContainer->make(JsonDecoderInterface::class), $this->serviceContainer->make(JsonSchemaAccessorInterface::class), $this->serviceContainer->make(GeneratorBuilderInterface::class));
+//
+//        $x = $j->main($input->getArgument('schema'));
+//
+//        $output->writeln(json_encode($x));
     }
 }
