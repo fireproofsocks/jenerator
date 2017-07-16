@@ -3,9 +3,26 @@
 namespace Jenerator\Generators;
 
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
+use Jenerator\ServiceContainerInterface;
+use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
 
 class ArrayGenerator implements GeneratorInterface
 {
+
+    /**
+     * @var ServiceContainerInterface
+     */
+    protected $serviceContainer;
+
+    /**
+     * @var GeneratorFactoryInterface
+     */
+    protected $generatorFactory;
+
+    /**
+     * @var GetExampleJsonFromSchemaInterface
+     */
+    protected $valueGenerator;
 
     /**
      * @var JsonSchemaAccessorInterface
@@ -13,14 +30,16 @@ class ArrayGenerator implements GeneratorInterface
     protected $schemaAccessor;
 
     /**
-     * @var GeneratorBuilderInterface
+     * For randomly sized arrays
+     * @var int
      */
-    protected $generatorBuilder;
+    protected $max_array_size = 10;
 
-    public function __construct(JsonSchemaAccessorInterface $schemaAccessor, GeneratorBuilderInterface $generatorBuilder)
+    public function __construct(ServiceContainerInterface $serviceContainer)
     {
-        $this->schemaAccessor = $schemaAccessor;
-        $this->generatorBuilder = $generatorBuilder;
+        $this->serviceContainer = $serviceContainer;
+        $this->generatorFactory = $this->serviceContainer->make(GeneratorFactoryInterface::class);
+        $this->valueGenerator = $this->serviceContainer->make(GetExampleJsonFromSchemaInterface::class);
     }
 
     /**
@@ -29,23 +48,83 @@ class ArrayGenerator implements GeneratorInterface
     public function getGeneratedFakeValue(JsonSchemaAccessorInterface $schemaAccessor)
     {
         // TODO: Implement getValue() method.
-        $output = [];
+        // TODO: uniqueItems
+        $array = [];
 
-        $this->schemaAccessor->factory($schema);
+        $this->schemaAccessor = $schemaAccessor;
 
-        if ($items = $schemaAccessor->getItems()) {
-            // Is tuple?
+        $itemsSchema = $this->schemaAccessor->getItems();
+
+        if (!$this->isAssociativeArray($itemsSchema)) {
+            // tuple
+            foreach ($itemsSchema as $schema) {
+                $array[] = $this->valueGenerator->getExampleValueFromSchema($schema);
+            }
+            // additionalItems (only meaningful in the context of a tuple)
+            if ($additionalItems = $this->schemaAccessor->getAdditionalItems()) {
+                // TODO: verify is boolean false or array
+                $cnt = $this->getAdditionalItemsCnt($array);
+                for ($i = 0; $i < $cnt; $i++ ) {
+                    $array[] = $this->valueGenerator->getExampleValueFromSchema($additionalItems);
+                }
+            }
+        }
+        else {
+            // standard list
+            $cnt = $this->getAdditionalItemsCnt($array);
+            for ($i = 0; $i < $cnt; $i++ ) {
+                $array[] = $this->valueGenerator->getExampleValueFromSchema($itemsSchema);
+            }
         }
 
-        // minItems
-        // maxItems
-        for ($i = 0; $i < 3; $i++ ) {
 
-            $output[] = $this->generatorBuilder->getGenerator('string')->getGeneratedFakeValue([]);
-        }
-        // additionalItems
-
-        return $output;
+        return $array;
     }
 
+    /**
+     * @see https://stackoverflow.com/questions/173400/how-to-check-if-php-array-is-associative-or-sequential
+     * @param array $array
+     * @return bool
+     */
+    protected function isAssociativeArray(array $array)
+    {
+        if ([] === $array) return false;
+        return array_keys($array) !== range(0, count($array) - 1);
+    }
+
+    /**
+     * How many more items do we need to add to this array?
+     * @param array $array
+     * @return integer
+     */
+    protected function getAdditionalItemsCnt(array $array)
+    {
+        $currentSize = count($array);
+        $neededItemsCnt = 0;
+
+        $min = $this->schemaAccessor->getMinItems();
+        if ($min !== false) {
+            if ($currentSize < $min) {
+                $neededItemsCnt = $min - $currentSize;
+            }
+        }
+        $max = $this->schemaAccessor->getMaxItems();
+        if ($max !== false) {
+            if ($currentSize < $max) {
+                if ($min) {
+                    $neededItemsCnt = rand($min, ($max - $currentSize));
+                }
+                else {
+                    $neededItemsCnt = rand(0, ($max - $currentSize));
+                }
+
+            }
+        }
+        else {
+            // No max defined
+            $neededItemsCnt = rand(0, $this->max_array_size);
+        }
+
+        return $neededItemsCnt;
+    }
 }

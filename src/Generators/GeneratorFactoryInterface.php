@@ -5,13 +5,13 @@ namespace Jenerator\Generators;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
 
 /**
- * Interface GeneratorBuilderInterface
+ * Interface GeneratorFactoryInterface
  *
  * Applies logic to determine which Generator class is returned.
  *
  * @package Jenerator\Generators
  */
-interface GeneratorBuilderInterface
+interface GeneratorFactoryInterface
 {
     /**
      * Given a loaded JSON Schema Accessor, this returns a generator that can generate sample data for the given schema.

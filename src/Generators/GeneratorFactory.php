@@ -4,22 +4,22 @@ namespace Jenerator\Generators;
 
 use Jenerator\Exceptions\InvalidTypeException;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
-use Jenerator\ServiceContainerInterface;
+use Pimple\Container;
 
-class GeneratorBuilder implements GeneratorBuilderInterface
+class GeneratorFactory implements GeneratorFactoryInterface
 {
     /**
-     * @var ServiceContainerInterface
+     * @var Container
      */
     protected $serviceContainer;
 
     /**
-     * Valid data types (per JSON Schema)
+     * Valid data types (per JSON Schema) -- TODO: put into the accessor class?
      * @var array
      */
     protected $validTypes = ['object', 'array', 'string', 'number', 'integer', 'boolean', 'null'];
 
-    public function __construct(ServiceContainerInterface $serviceContainer)
+    public function __construct(Container $serviceContainer)
     {
         $this->serviceContainer = $serviceContainer;
     }
@@ -31,17 +31,24 @@ class GeneratorBuilder implements GeneratorBuilderInterface
     {
         // TODO: de-reference
         // TODO: evaluate oneOf, anyOf
-        $type = $jsonSchemaAccessor->getType();
+        // TODO: not ???
+        if ($enum = $jsonSchemaAccessor->getEnum()) {
+            $type = 'enum';
+        } else {
+            $type = $jsonSchemaAccessor->getType();
 
-        if (!$type || is_array($type)) {
-            $type = $this->getRandomType($type);
+            if (!$type) {
+                $type = $this->getRandomType();
+            } elseif (is_array($type)) {
+                $type = $this->getRandomType($type);
+            }
         }
 
         try {
-            $generator = $this->serviceContainer->make('generator_' . $type);
-        }
-        catch (\Exception $e) {
-            throw new InvalidTypeException('The type "'.$type.'" is not a valid JSON Schema type', $e->getCode(), $e);
+            $generator = $this->serviceContainer->offsetGet('generator_' . $type);
+        } catch (\Exception $e) {
+            throw new InvalidTypeException('The type "' . $type . '" is not a valid JSON Schema type', $e->getCode(),
+                $e);
         }
 
         return $generator;
@@ -57,8 +64,6 @@ class GeneratorBuilder implements GeneratorBuilderInterface
     {
         $available = ($available) ? $available : $this->validTypes;
 
-        $item_index = rand(0, count($available));
-
-        return $available[$item_index];
+        return $available[array_rand($available)];
     }
 }

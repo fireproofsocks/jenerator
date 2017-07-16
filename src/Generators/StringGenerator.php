@@ -7,6 +7,7 @@ use Faker\Generator;
 use Faker\Provider\DateTime;
 use Faker\Provider\Internet;
 use Faker\Provider\Lorem;
+use Jenerator\FormatFaker\FormatFakerFactoryInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
 
 class StringGenerator implements GeneratorInterface
@@ -17,41 +18,30 @@ class StringGenerator implements GeneratorInterface
     protected $schemaAccessor;
 
     /**
+     * @var FormatFakerFactoryInterface
+     */
+    protected $faker;
+
+    public function __construct(FormatFakerFactoryInterface $faker)
+    {
+        $this->faker = $faker;
+    }
+
+    /**
      * @inheritdoc
      */
     public function getGeneratedFakeValue(JsonSchemaAccessorInterface $schemaAccessor, $locale = 'en_US')
     {
         $this->schemaAccessor = $schemaAccessor;
 
-        // TODO: pattern (!!!), minLength, maxLength
-        // TODO: support for locale, e.g. default is en_US
-        // $maxNbChars = 200
-        $format = $this->schemaAccessor->getFormat();
-
-        // @see https://spacetelescope.github.io/understanding-json-schema/reference/string.html
-        switch ($format) {
-            case 'date-time':
-                $string = DateTime::iso8601();
-                break;
-            case 'email':
-                $string = (new Internet(Factory::create($locale)))->email();
-                break;
-            case 'hostname':
-                $string = (new Internet(Factory::create($locale)))->domainName();
-                break;
-            case 'ipv4':
-                $string = (new Internet(Factory::create($locale)))->ipv4();
-                break;
-            case 'ipv6':
-                $string = (new Internet(Factory::create($locale)))->ipv6();
-                break;
-            case 'uri':
-                $string = (new Internet(Factory::create($locale)))->url();
-                break;
-            default:
-                $string = Lorem::text();
+        if ($format = $this->schemaAccessor->getFormat()) {
+            $string = $this->faker->getFakeDataForFormat($format, $this->schemaAccessor);
         }
+        else {
+            $string = Lorem::text();
+        }
+        // TODO: pattern (!!!), minLength, maxLength
 
-        return $string;
+        return strval($string);
     }
 }

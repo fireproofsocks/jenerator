@@ -2,17 +2,17 @@
 
 namespace Jenerator\ReferenceResolver;
 
-use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorBuilderInterface;
+use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorFactoryInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
 
 class ReferenceResolver implements ReferenceResolverInterface
 {
     /**
-     * @var JsonSchemaAccessorBuilderInterface
+     * @var JsonSchemaAccessorFactoryInterface
      */
     protected $schemaAccessorBuilder;
 
-    public function __construct(JsonSchemaAccessorBuilderInterface $schemaAccessorBuilder)
+    public function __construct(JsonSchemaAccessorFactoryInterface $schemaAccessorBuilder)
     {
         $this->schemaAccessorBuilder = $schemaAccessorBuilder;
     }

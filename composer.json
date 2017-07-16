@@ -1,8 +1,7 @@
 {
     "name": "jenerator/jenerator",
-    "description": "Generates JSON values, files, and examples from JSON Schema definitions for use as seed data, sample API responses, etc.",
+    "description": "Generates JSON values from JSON Schema definitions for use as seed data, sample API responses, etc.",
     "type": "library",
-
     "license": "MIT",
     "minimum-stability": "stable",
     "require": {
@@ -15,6 +14,7 @@
         "mockery/mockery": "^0.9.7"
     },
     "autoload": {
+        "files": ["helpers.php"],
         "psr-4": {
             "Jenerator\\": "src/"
         }

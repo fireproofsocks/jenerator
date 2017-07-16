@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "patternProperties": {
+    "^str_[a-z]*": {
+      "type": "string"
+    }
+  },
+  "minProperties": 3,
+  "maxProperties": 5
+}

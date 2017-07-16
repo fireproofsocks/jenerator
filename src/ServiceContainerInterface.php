@@ -17,12 +17,4 @@ interface ServiceContainerInterface
      * @return mixed
      */
     public function make($service);
-
-    /**
-     * Bind an implementation to an interface ($service)
-     * @param $service
-     * @param \Closure $closure
-     * @return mixed
-     */
-    public function bind($service, \Closure $closure);
 }

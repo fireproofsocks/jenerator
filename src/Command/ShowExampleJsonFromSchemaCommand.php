@@ -2,13 +2,14 @@
 
 namespace Jenerator\Command;
 
-use Jenerator\Generators\GeneratorBuilderInterface;
+use Jenerator\Generators\GeneratorFactoryInterface;
 use Jenerator\Jenerator;
 use Jenerator\JsonDecoder\JsonDecoderInterface;
-use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorBuilderInterface;
+use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorFactoryInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
 use Jenerator\ServiceContainerInterface;
 use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
+use Pimple\Container;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -17,6 +18,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ShowExampleJsonFromSchemaCommand extends Command
 {
+    /**
+     * @var Container
+     */
     protected $serviceContainer;
 
     public function __construct(ServiceContainerInterface $serviceContainer)
@@ -46,7 +50,7 @@ class ShowExampleJsonFromSchemaCommand extends Command
 
         $schema = $decoder->decodeFile($input->getArgument('schema'));
 
-        $example = $useCase->getExampleJsonFromSchema($schema);
+        $example = $useCase->getExampleValueFromSchema($schema);
 
         $output->writeln(json_encode($example));
         return;
@@ -55,11 +59,11 @@ class ShowExampleJsonFromSchemaCommand extends Command
 
         $schema = $decoder->decodeFile($input->getArgument('schema'));
 
-        $accessor = $this->serviceContainer->make(JsonSchemaAccessorBuilderInterface::class)->getJsonSchemaAccessor($schema);
+        $accessor = $this->serviceContainer->make(JsonSchemaAccessorFactoryInterface::class)->getJsonSchemaAccessor($schema);
 
-        //$this->serviceContainer->make(GeneratorBuilderInterface::class)
+        //$this->serviceContainer->make(GeneratorFactoryInterface::class)
 
-//        $j = new Jenerator($this->serviceContainer->make(JsonDecoderInterface::class), $this->serviceContainer->make(JsonSchemaAccessorInterface::class), $this->serviceContainer->make(GeneratorBuilderInterface::class));
+//        $j = new Jenerator($this->serviceContainer->make(JsonDecoderInterface::class), $this->serviceContainer->make(JsonSchemaAccessorInterface::class), $this->serviceContainer->make(GeneratorFactoryInterface::class));
 //
 //        $x = $j->main($input->getArgument('schema'));
 //

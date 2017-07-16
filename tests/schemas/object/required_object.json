@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "patternProperties": {
+    "^tag": {
+      "type": "string",
+      "format": "slug"
+    }
+  },
+  "additionalProperties": {
+    "type": "boolean"
+  },
+  "required": [
+    "tag_one",
+    "tag_two",
+    "flagged"
+  ]
+}

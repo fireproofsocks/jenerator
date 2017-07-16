@@ -5,6 +5,11 @@ namespace Jenerator\JsonSchemaAccessor;
 use Jenerator\Exceptions\DefinitionNotFoundException;
 use Jenerator\Exceptions\InvalidReferenceException;
 
+/**
+ * Class JsonSchemaV4Accessor
+ * @see https://epoberezkin.github.io/ajv/keywords.html
+ * @package Jenerator\JsonSchemaAccessor
+ */
 class JsonSchemaV4Accessor implements JsonSchemaAccessorInterface
 {
     protected $schema = [];
@@ -141,6 +146,7 @@ class JsonSchemaV4Accessor implements JsonSchemaAccessorInterface
 
     public function getAdditionalProperties()
     {
+        // false if no additional properties are allowed, a schema to define other properties
         return (array_key_exists('additionalProperties', $this->schema)) ? $this->schema['additionalProperties'] : [];
     }
 
@@ -293,6 +299,11 @@ class JsonSchemaV4Accessor implements JsonSchemaAccessorInterface
     public function setExamples(array $examples)
     {
         $this->schema['examples'] = $examples;
+    }
+
+    public function getKeyword($keyword, $default = null)
+    {
+        return isset($this->schema[$keyword]) ? $this->schema[$keyword] : $default;
     }
 
 }

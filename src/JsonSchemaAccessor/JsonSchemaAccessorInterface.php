@@ -123,4 +123,11 @@ interface JsonSchemaAccessorInterface
      * @return array
      */
     public function mergeMetaData(array $child_schema);
+
+    /**
+     * @param $keyword
+     * @param null $default
+     * @return mixed
+     */
+    public function getKeyword($keyword, $default = null);
 }

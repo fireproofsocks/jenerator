@@ -1,0 +1,17 @@
+{
+  "type": "array",
+  "items": [
+    {
+      "type": "boolean"
+    },
+    {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+    {
+      "type": "string",
+      "format": "username"
+    }
+  ]
+}

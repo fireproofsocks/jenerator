@@ -3,7 +3,7 @@
 namespace Jenerator\JsonSchemaAccessor;
 
 /**
- * Interface JsonSchemaAccessorBuilderInterface
+ * Interface JsonSchemaAccessorFactoryInterface
  *
  * This will determine which schema accessor instance to return for the given schema.
  * E.g. this would distinguish between a JSON Schema v4 or v5 accessor class, or it could support custom schemas.
@@ -12,7 +12,7 @@ namespace Jenerator\JsonSchemaAccessor;
  * @see http://json-schema.org/latest/json-schema-core.html#rfc.section.6.4
  * @package Jenerator\JsonSchemaAccessor
  */
-interface JsonSchemaAccessorBuilderInterface
+interface JsonSchemaAccessorFactoryInterface
 {
     /**
      * Return the appropriate accessor class

@@ -2,7 +2,7 @@
 
 namespace Jenerator\Command;
 
-use Jenerator\Generators\GeneratorBuilderInterface;
+use Jenerator\Generators\GeneratorFactoryInterface;
 use Jenerator\Jenerator;
 use Jenerator\JsonDecoder\JsonDecoderInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
@@ -38,7 +38,7 @@ class AppendExamplesToSchemaCommand extends Command
         //$output->writeln($input->getArgument('schema'));
 
         // ...
-        $j = new Jenerator($this->serviceContainer->make(JsonDecoderInterface::class), $this->serviceContainer->make(JsonSchemaAccessorInterface::class), $this->serviceContainer->make(GeneratorBuilderInterface::class));
+        $j = new Jenerator($this->serviceContainer->make(JsonDecoderInterface::class), $this->serviceContainer->make(JsonSchemaAccessorInterface::class), $this->serviceContainer->make(GeneratorFactoryInterface::class));
 
         $x = $j->main($input->getArgument('schema'));
 

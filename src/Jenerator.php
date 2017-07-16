@@ -2,7 +2,7 @@
 
 namespace Jenerator;
 
-use Jenerator\Generators\GeneratorBuilderInterface;
+use Jenerator\Generators\GeneratorFactoryInterface;
 use Jenerator\Generators\RandomTypeGenerator;
 use Jenerator\JsonDecoder\JsonDecoder;
 use Jenerator\JsonDecoder\JsonDecoderInterface;
@@ -21,11 +21,11 @@ class Jenerator
     protected $schemaAccessor;
 
     /**
-     * @var GeneratorBuilderInterface
+     * @var GeneratorFactoryInterface
      */
     protected $generatorBuilder;
 
-    public function __construct(JsonDecoderInterface $jsonDecoder, JsonSchemaAccessorInterface $schemaAccessor, GeneratorBuilderInterface $generatorBuilder)
+    public function __construct(JsonDecoderInterface $jsonDecoder, JsonSchemaAccessorInterface $schemaAccessor, GeneratorFactoryInterface $generatorBuilder)
     {
         $this->jsonDecoder = $jsonDecoder;
         $this->schemaAccessor = $schemaAccessor;

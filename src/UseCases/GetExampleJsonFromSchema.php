@@ -2,8 +2,8 @@
 
 namespace Jenerator\UseCases;
 
-use Jenerator\Generators\GeneratorBuilderInterface;
-use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorBuilderInterface;
+use Jenerator\Generators\GeneratorFactoryInterface;
+use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorFactoryInterface;
 
 class GetExampleJsonFromSchema implements GetExampleJsonFromSchemaInterface
 {
@@ -15,10 +15,10 @@ class GetExampleJsonFromSchema implements GetExampleJsonFromSchemaInterface
 
     /**
      * GetExampleJsonFromSchema constructor.
-     * @param JsonSchemaAccessorBuilderInterface $schemaAccessorBuilder
-     * @param GeneratorBuilderInterface $generatorBuilder
+     * @param JsonSchemaAccessorFactoryInterface $schemaAccessorBuilder
+     * @param GeneratorFactoryInterface $generatorBuilder
      */
-    public function __construct(JsonSchemaAccessorBuilderInterface $schemaAccessorBuilder, GeneratorBuilderInterface $generatorBuilder)
+    public function __construct(JsonSchemaAccessorFactoryInterface $schemaAccessorBuilder, GeneratorFactoryInterface $generatorBuilder)
     {
         $this->schemaAccessorBuilder = $schemaAccessorBuilder;
         $this->generatorBuilder = $generatorBuilder;
@@ -27,7 +27,7 @@ class GetExampleJsonFromSchema implements GetExampleJsonFromSchemaInterface
     /**
      * @inheritdoc
      */
-    public function getExampleJsonFromSchema(array $schema)
+    public function getExampleValueFromSchema(array $schema)
     {
         $accessor = $this->schemaAccessorBuilder->getJsonSchemaAccessor($schema);
 

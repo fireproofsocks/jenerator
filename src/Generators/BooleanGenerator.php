@@ -12,7 +12,7 @@ class BooleanGenerator implements GeneratorInterface
      */
     public function getGeneratedFakeValue(JsonSchemaAccessorInterface $schemaAccessor)
     {
-        return Miscellaneous::boolean();
+        return boolval(Miscellaneous::boolean());
     }
 
 }

@@ -3,15 +3,20 @@
 namespace Jenerator\Generators;
 
 use Faker\Provider\Base;
+use Jenerator\FormatFaker\FormatFakerFactoryInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
 
 class NumberGenerator extends IntegerGenerator implements GeneratorInterface
 {
-
     /**
-     * @var JsonSchemaAccessorInterface
+     * @var FormatFakerFactoryInterface
      */
-    protected $schemaAccessor;
+    protected $faker;
+
+    public function __construct(FormatFakerFactoryInterface $faker)
+    {
+        $this->faker = $faker;
+    }
 
     /**
      * @inheritdoc
@@ -25,7 +30,11 @@ class NumberGenerator extends IntegerGenerator implements GeneratorInterface
 
         $number = Base::randomFloat(null, $minimum, $maximum);
 
-        return $this->roundToNearestMultiple($number);
+        if ($multipleOf = $this->schemaAccessor->getMultipleOf()) {
+            $number = $this->roundToNearestMultiple($number, $multipleOf);
+        }
+
+        return floatval($number);
     }
 
     /**

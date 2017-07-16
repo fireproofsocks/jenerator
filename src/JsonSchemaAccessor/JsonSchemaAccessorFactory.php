@@ -3,12 +3,12 @@
 namespace Jenerator\JsonSchemaAccessor;
 
 use Jenerator\Exceptions\SchemaAccessorException;
-use Jenerator\ServiceContainerInterface;
+use Pimple\Container;
 
-class JsonSchemaAccessorBuilder implements JsonSchemaAccessorBuilderInterface
+class JsonSchemaAccessorFactory implements JsonSchemaAccessorFactoryInterface
 {
     /**
-     * @var ServiceContainerInterface
+     * @var Container
      */
     protected $serviceContainer;
 
@@ -20,10 +20,10 @@ class JsonSchemaAccessorBuilder implements JsonSchemaAccessorBuilderInterface
     protected $default_schema_version = 'http://json-schema.org/draft-04/schema#';
 
     /**
-     * JsonSchemaAccessorBuilder constructor.
-     * @param ServiceContainerInterface $serviceContainer
+     * JsonSchemaAccessorFactory constructor.
+     * @param Container $serviceContainer
      */
-    public function __construct(ServiceContainerInterface $serviceContainer)
+    public function __construct(Container $serviceContainer)
     {
         $this->serviceContainer = $serviceContainer;
     }
@@ -36,7 +36,7 @@ class JsonSchemaAccessorBuilder implements JsonSchemaAccessorBuilderInterface
         $schema_version = (isset($schema['$schema'])) ? $schema['$schema'] : $this->default_schema_version;
 
         try {
-            $schemaAccessor = $this->serviceContainer->make('accessor_'.$schema_version);
+            $schemaAccessor = $this->serviceContainer->offsetGet('accessor_'.$schema_version);
         }
         catch (\Exception $e) {
             throw new SchemaAccessorException('Accessor not defined for $schema '. $schema_version, $e->getCode(), $e);

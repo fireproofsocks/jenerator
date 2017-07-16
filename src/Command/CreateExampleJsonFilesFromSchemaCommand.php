@@ -2,11 +2,11 @@
 
 namespace Jenerator\Command;
 
-use Jenerator\Generators\GeneratorBuilderInterface;
+use Jenerator\Generators\GeneratorFactoryInterface;
 use Jenerator\Jenerator;
 use Jenerator\JsonDecoder\JsonDecoderInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
-use Jenerator\ServiceContainerInterface;
+use Pimple\Container;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -15,9 +15,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CreateExampleJsonFilesFromSchemaCommand extends Command
 {
+    /**
+     * @var Container
+     */
     protected $serviceContainer;
 
-    public function __construct(ServiceContainerInterface $serviceContainer)
+    public function __construct(Container $serviceContainer)
     {
         $this->serviceContainer = $serviceContainer;
 
@@ -38,7 +41,7 @@ class CreateExampleJsonFilesFromSchemaCommand extends Command
         //$output->writeln($input->getArgument('schema'));
 
         // ...
-        $j = new Jenerator($this->serviceContainer->make(JsonDecoderInterface::class), $this->serviceContainer->make(JsonSchemaAccessorInterface::class), $this->serviceContainer->make(GeneratorBuilderInterface::class));
+        $j = new Jenerator($this->serviceContainer->make(JsonDecoderInterface::class), $this->serviceContainer->make(JsonSchemaAccessorInterface::class), $this->serviceContainer->make(GeneratorFactoryInterface::class));
 
         $x = $j->main($input->getArgument('schema'));
 

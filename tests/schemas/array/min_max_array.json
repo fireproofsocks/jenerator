@@ -1,0 +1,9 @@
+{
+  "description": "This should always have 3 elements",
+  "type": "array",
+  "items": {
+    "type": "boolean"
+  },
+  "minItems": 3,
+  "maxItems": 3
+}
