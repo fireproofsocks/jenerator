@@ -2,6 +2,9 @@
 
 namespace Jenerator\ReferenceResolver;
 
+use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorFactoryInterface;
+use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
+
 /**
  * Interface ReferenceResolverInterface
  *
@@ -11,5 +14,14 @@ namespace Jenerator\ReferenceResolver;
  */
 interface ReferenceResolverInterface
 {
-    //public function getSchema(array $schema);
+    /**
+     * Resolve the reference defined by $ref.  This should return a new JsonSchemaAccessorInterface pointed at the
+     * the targeted $ref.
+     *
+     * @param $ref string
+     * @param JsonSchemaAccessorInterface $schemaAccessor
+     * @param JsonSchemaAccessorFactoryInterface $schemaAccessorFactory
+     * @return JsonSchemaAccessorInterface
+     */
+    public function resolveSchema($ref, JsonSchemaAccessorInterface $schemaAccessor, JsonSchemaAccessorFactoryInterface $schemaAccessorFactory);
 }

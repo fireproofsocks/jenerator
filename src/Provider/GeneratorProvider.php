@@ -52,10 +52,10 @@ class GeneratorProvider implements ServiceProviderInterface
             return new StringGenerator($c[FormatFakerFactoryInterface::class]);
         };
         $container['generator_number'] = function ($c) {
-            return new NumberGenerator($c[FormatFakerFactoryInterface::class]);
+            return new NumberGenerator();
         };
         $container['generator_integer'] = function ($c) {
-            return new IntegerGenerator($c[FormatFakerFactoryInterface::class]);
+            return new IntegerGenerator();
         };
         $container['generator_boolean'] = function () {
             return new BooleanGenerator();

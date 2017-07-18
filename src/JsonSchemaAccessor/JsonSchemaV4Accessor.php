@@ -262,7 +262,7 @@ class JsonSchemaV4Accessor implements JsonSchemaAccessorInterface
 
     public function mergeMetaData(array $child_schema)
     {
-        $child = (new JsonSchemaV4Accessor())->factory($child_schema);
+        $child = (new JsonSchemaV4Accessor())->hydrate($child_schema);
 
         if (!$child->getId()) {
             if ($this->getId()) {

@@ -1,0 +1,7 @@
+{
+  "anyOf": [
+    {"type": "integer", "minimum": 10, "maximum": 99, "description": "small"},
+    {"type": "integer", "minimum": 100, "maximum": 999, "description": "medium"},
+    {"type": "integer", "minimum": 1000, "maximum": 9999, "description": "large"}
+  ]
+}

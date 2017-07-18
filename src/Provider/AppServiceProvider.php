@@ -14,6 +14,8 @@ use Jenerator\JsonEncoder\JsonEncoder;
 use Jenerator\JsonEncoder\JsonEncoderInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorFactory;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorFactoryInterface;
+use Jenerator\ReferenceResolver\ReferenceResolver;
+use Jenerator\ReferenceResolver\ReferenceResolverInterface;
 use Jenerator\ReverseRegex\ReverseRegex;
 use Jenerator\ReverseRegex\ReverseRegexInterface;
 use Jenerator\ServiceContainer;
@@ -58,6 +60,12 @@ class AppServiceProvider implements ServiceProviderInterface
             return new ReverseRegex(new Base(Factory::create(getLocale())));
         };
 
+        $container[ReferenceResolverInterface::class] = function ($c) {
+//            return new ReferenceResolver($c[JsonSchemaAccessorFactoryInterface::class]);
+            return new ReferenceResolver();
+            //return new ReferenceResolver($c);
+        };
+
         // Format Faker Factory
         $container[FormatFakerFactoryInterface::class] = function ($c) {
             // Uses its own container to isolate accessors
@@ -70,6 +78,9 @@ class AppServiceProvider implements ServiceProviderInterface
         $container[JsonSchemaAccessorFactoryInterface::class] = function ($c) {
             return new JsonSchemaAccessorFactory($c);
         };
+//        $container[JsonSchemaAccessorFactoryInterface::class] = $container->factory(function ($c) {
+//            return new JsonSchemaAccessorFactory($c);
+//        });
 
         // Generator Factory
         $container[GeneratorFactoryInterface::class] = function ($c) {

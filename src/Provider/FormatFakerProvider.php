@@ -4,8 +4,11 @@ namespace Jenerator\Provider;
 
 use Faker\Factory;
 use Faker\Provider\Address;
-use Faker\Provider\Base;
+use Faker\Provider\Barcode;
+use Faker\Provider\Color;
 use Faker\Provider\DateTime;
+use Faker\Provider\File;
+use Faker\Provider\Image;
 use Faker\Provider\Internet;
 use Faker\Provider\Lorem;
 use Faker\Provider\Payment;
@@ -13,10 +16,9 @@ use Faker\Provider\Person;
 use Faker\Provider\PhoneNumber;
 use Faker\Provider\Miscellaneous;
 use Faker\Provider\UserAgent;
+use Faker\Provider\Uuid;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-
-// See https://www.shellhacks.com/linux-define-locale-language-settings/
 
 /**
  * Class FormatFakerProvider
@@ -55,9 +57,47 @@ class FormatFakerProvider implements ServiceProviderInterface
             return (new Internet(Factory::create(getLocale())))->url();
         });
 
+        // http://json-schema.org/latest/json-schema-validation.html#rfc.section.8.3.7
         // - 8.3.7. uri-reference
+        // Examples: https://tools.ietf.org/html/rfc3986#section-1.1.2
+        $container['uri-reference'] = $container->protect(function($accessor) {
+            // TODO: mix this up so we aren't just duplicating the 'uri' keyword
+            // Examples:
+            // ftp://ftp.is.co.za/rfc/rfc1808.txt
+            // http://www.ietf.org/rfc/rfc2396.txt
+            // ldap://[2001:db8::7]/c=GB?objectClass?one
+            // mailto:John.Doe@example.com
+            // news:comp.infosystems.www.servers.unix
+            // tel:+1-816-555-1212
+            // telnet://192.0.2.16:80/
+            // urn:oasis:names:specification:docbook:dtd:xml:4.1.2
+            return (new Internet(Factory::create(getLocale())))->url();
+        });
         // - 8.3.8. uri-template
+        // https://tools.ietf.org/html/rfc6570
+        $container['uri-template'] = $container->protect(function($accessor) {
+            // Examples:
+            // http://example.com/~{username}/
+            // http://example.com/dictionary/{term:1}/{term}
+            // http://example.com/search{?q,lang}
+        });
         // - 8.3.9. json-pointer
+        // https://tools.ietf.org/html/rfc6901
+        $container['json-pointer'] = $container->protect(function($accessor) {
+            // Examples
+            // ""           // the whole document
+            // "/foo"       ["bar", "baz"]
+            // "/foo/0"     "bar"
+            // "/"          0
+            // "/a~1b"      1
+            // "/c%d"       2
+            // "/e^f"       3
+            // "/g|h"       4
+            // "/i\\j"      5
+            // "/k\"l"      6
+            // "/ "         7
+            // "/m~0n"      8
+        });
 
         // Custom Formats
         // Internet
@@ -91,14 +131,27 @@ class FormatFakerProvider implements ServiceProviderInterface
             return (new PhoneNumber(Factory::create(getLocale())))->imei();
         });
 
+        // Images
+        $container['image-url'] = $container->protect(function($accessor) {
+            // TODO: get height and width
+            // imageUrl($width = 640, $height = 480, $category = null, $randomize = true, $word = null, $gray = false)
+            return (new Image(Factory::create(getLocale())))->imageUrl();
+        });
 
-    //    - mime-type
-    //    - file-extension (no dot)
-    //- file (an absolute path to a temp file)
-        $container['user-agent'] = function ($c) {
+        // File
+        $container['mime-type'] = $container->protect(function($accessor) {
+            return (new File(Factory::create(getLocale())))->mimeType();
+        });
+        $container['file-extension'] = $container->protect(function($accessor) {
+            // no dot
+            return (new File(Factory::create(getLocale())))->fileExtension();
+        });
+
+
+        $container['user-agent'] = $container->protect(function($accessor) {
             return (new UserAgent(Factory::create(getLocale())))->userAgent();
-        };
-    //- uuid (e.g. 7e57d004-2b97-0e7a-b45f-5387367791cd)
+        });
+
 
         $container['person-title'] = $container->protect(function($accessor) {
             return (new Person(Factory::create(getLocale())))->title();
@@ -112,8 +165,8 @@ class FormatFakerProvider implements ServiceProviderInterface
         $container['person-lastname'] = $container->protect(function($accessor) {
             return (new Person(Factory::create(getLocale())))->lastName();
         });
-        //- person-gender (male, female, null)
 
+        // I18N (internationalization)
         $container['language-code'] = $container->protect(function($accessor) {
             return (new Miscellaneous(Factory::create(getLocale())))->languageCode();
         });
@@ -132,7 +185,7 @@ class FormatFakerProvider implements ServiceProviderInterface
             return (new Miscellaneous(Factory::create(getLocale())))->locale();
         });
 
-        // Algorithms : hashes
+        // Algorithms : hashes etc
         $container['md5'] = $container->protect(function($accessor) {
             return (new Miscellaneous(Factory::create(getLocale())))->md5();
         });
@@ -142,30 +195,66 @@ class FormatFakerProvider implements ServiceProviderInterface
         $container['sha256'] = $container->protect(function($accessor) {
             return (new Miscellaneous(Factory::create(getLocale())))->sha256();
         });
+        $container['uuid'] = $container->protect(function($accessor) {
+            return (new Uuid(Factory::create(getLocale())))->uuid();
+        });
 
         // Text
         $container['paragraphs'] = $container->protect(function($accessor) {
             return (new Lorem(Factory::create(getLocale())))->paragraph();
         });
 
-    //- unix-timestamp
-    //- date (e.g. 2008-11-27)
-    //- time (e.g. 23:59:59)
-    //- ampm (e.g. am)
-    //- day-of-week (e.g. Wednesday)
-    //- monthname
-    //- year
+        // Date/time
+        $container['unix-timestamp'] = $container->protect(function($accessor) {
+            return (new DateTime(Factory::create(getLocale())))->unixTime();
+        });
+        $container['date'] = $container->protect(function($accessor) {
+            return (new DateTime(Factory::create(getLocale())))->date();
+        });
+        $container['time'] = $container->protect(function($accessor) {
+            return (new DateTime(Factory::create(getLocale())))->time();
+        });
+        $container['am-pm'] = $container->protect(function($accessor) {
+            return (new DateTime(Factory::create(getLocale())))->amPm();
+        });
+        $container['day-of-week'] = $container->protect(function($accessor) {
+            return (new DateTime(Factory::create(getLocale())))->dayOfWeek();
+        });
+        $container['monthname'] = $container->protect(function($accessor) {
+            return (new DateTime(Factory::create(getLocale())))->monthName();
+        });
+        $container['year'] = $container->protect(function($accessor) {
+            return (new DateTime(Factory::create(getLocale())))->year();
+        });
         $container['timezone'] = $container->protect(function($accessor) {
             return (new DateTime(Factory::create(getLocale())))->timezone();
         });
 
-    //- color-hex
-    //- color-rgb
-    //- color-name
+        // Colors
+        $container['color-hex'] = $container->protect(function($accessor) {
+            return (new Color(Factory::create(getLocale())))->hexColor();
+        });
+        $container['color-rgb'] = $container->protect(function($accessor) {
+            return (new Color(Factory::create(getLocale())))->rgbColor();
+        });
+        $container['color-name'] = $container->protect(function($accessor) {
+            return (new Color(Factory::create(getLocale())))->colorName();
+        });
 
-    //- isbn-10
-    //- isbn-13
-    //
+        // Barcodes
+        $container['isbn-10'] = $container->protect(function($accessor) {
+            return (new Barcode(Factory::create(getLocale())))->isbn10();
+        });
+        $container['isbn-13'] = $container->protect(function($accessor) {
+            return (new Barcode(Factory::create(getLocale())))->isbn13();
+        });
+        $container['ean-8'] = $container->protect(function($accessor) {
+            return (new Barcode(Factory::create(getLocale())))->ean8();
+        });
+        $container['ean-13'] = $container->protect(function($accessor) {
+            return (new Barcode(Factory::create(getLocale())))->ean13();
+        });
+
         // Address
         $container['address-city'] = $container->protect(function($accessor) {
             return (new Address(Factory::create(getLocale())))->city();

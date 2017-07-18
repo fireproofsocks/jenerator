@@ -29,9 +29,6 @@ class GeneratorFactory implements GeneratorFactoryInterface
      */
     public function getGenerator(JsonSchemaAccessorInterface $jsonSchemaAccessor)
     {
-        // TODO: de-reference
-        // TODO: evaluate oneOf, anyOf
-        // TODO: not ???
         if ($enum = $jsonSchemaAccessor->getEnum()) {
             $type = 'enum';
         } else {

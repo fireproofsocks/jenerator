@@ -39,8 +39,9 @@ class ObjectPatternPropertiesGenerator implements GeneratorInterface
     }
 
     /**
-     * TODO: this is covered SOMEWHAT by the ObjectPropertiesGenerator and ObjectRequiredPropertiesGenerator...
-     * If you had a minProperties and only patternProperties, you'd need to supply a regex generator OR some sample field names.
+     * Some situations will not be covered by the other generators, e.g. if the schema has a minProperties and
+     * only patternProperties defined (no regular properties), then you'd need to supply a regex generator OR
+     * some sample field names.
      *
      * @inheritdoc
      */

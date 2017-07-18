@@ -14,16 +14,6 @@ class IntegerGenerator implements GeneratorInterface
     protected $schemaAccessor;
 
     /**
-     * @var FormatFakerFactoryInterface
-     */
-    protected $faker;
-
-    public function __construct(FormatFakerFactoryInterface $faker)
-    {
-        $this->faker = $faker;
-    }
-
-    /**
      * @inheritdoc
      */
     public function getGeneratedFakeValue(JsonSchemaAccessorInterface $schemaAccessor)
