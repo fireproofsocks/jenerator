@@ -2,13 +2,10 @@
 
 namespace Jenerator\Generators;
 
-use Faker\Factory;
-use Faker\Generator;
-use Faker\Provider\DateTime;
-use Faker\Provider\Internet;
 use Faker\Provider\Lorem;
 use Jenerator\FormatFaker\FormatFakerFactoryInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
+use Jenerator\ReverseRegex\ReverseRegexInterface;
 
 class StringGenerator implements GeneratorInterface
 {
@@ -22,9 +19,15 @@ class StringGenerator implements GeneratorInterface
      */
     protected $faker;
 
-    public function __construct(FormatFakerFactoryInterface $faker)
+    /**
+     * @var ReverseRegexInterface
+     */
+    protected $reverseRegex;
+
+    public function __construct(FormatFakerFactoryInterface $faker, ReverseRegexInterface $reverseRegex)
     {
         $this->faker = $faker;
+        $this->reverseRegex = $reverseRegex;
     }
 
     /**
@@ -37,11 +40,45 @@ class StringGenerator implements GeneratorInterface
         if ($format = $this->schemaAccessor->getFormat()) {
             $string = $this->faker->getFakeDataForFormat($format, $this->schemaAccessor);
         }
+        elseif ($pattern = $this->schemaAccessor->getPattern()) {
+            $string = $this->reverseRegex->getValueFromRegex($pattern);
+        }
+        else {
+            $string = $this->getRandomString($this->schemaAccessor->getMinLength(), $this->schemaAccessor->getMaxLength());
+        }
+
+        return strval($string);
+    }
+
+    /**
+     * @param $min mixed
+     * @param $max mixed
+     * @return string
+     */
+    protected function getRandomString($min, $max)
+    {
+        // TODO: isolate this into its own function
+        if ($max) {
+            if ($max < 5) {
+                $string = substr(Lorem::text(5), 0, $max);
+
+            }
+            else {
+                $string = Lorem::text($max);
+            }
+        }
         else {
             $string = Lorem::text();
         }
-        // TODO: pattern (!!!), minLength, maxLength
 
-        return strval($string);
+
+        if ($min) {
+            $len = strlen($string);
+            if ($len < $min) {
+                $string = $string . $this->getRandomString($min - $len, $min - $len);
+            }
+        }
+
+        return $string;
     }
 }

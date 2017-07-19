@@ -77,6 +77,10 @@ class ArrayGenerator implements GeneratorInterface
             }
         }
 
+        // unique
+        if ($schemaAccessor->getUniqueItems()) {
+            $array = array_unique($array);
+        }
 
         return $array;
     }

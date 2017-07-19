@@ -2,8 +2,6 @@
 
 namespace Jenerator\Provider;
 
-use Faker\Factory;
-use Faker\Provider\Base;
 use Jenerator\FormatFaker\FormatFakerFactory;
 use Jenerator\FormatFaker\FormatFakerFactoryInterface;
 use Jenerator\Generators\GeneratorFactory;
@@ -16,7 +14,7 @@ use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorFactory;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorFactoryInterface;
 use Jenerator\ReferenceResolver\ReferenceResolver;
 use Jenerator\ReferenceResolver\ReferenceResolverInterface;
-use Jenerator\ReverseRegex\ReverseRegex;
+use Jenerator\ReverseRegex\ReverseRegexImproved;
 use Jenerator\ReverseRegex\ReverseRegexInterface;
 use Jenerator\ServiceContainer;
 use Jenerator\UseCases\AppendExamplesToSchema;
@@ -27,6 +25,7 @@ use Jenerator\UseCases\GetExampleJsonFromSchema;
 use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use RegRev\RegRev;
 
 class AppServiceProvider implements ServiceProviderInterface
 {
@@ -57,13 +56,11 @@ class AppServiceProvider implements ServiceProviderInterface
         };
 
         $container[ReverseRegexInterface::class] = function ($c) {
-            return new ReverseRegex(new Base(Factory::create(getLocale())));
+            return new ReverseRegexImproved(new RegRev());
         };
 
         $container[ReferenceResolverInterface::class] = function ($c) {
-//            return new ReferenceResolver($c[JsonSchemaAccessorFactoryInterface::class]);
             return new ReferenceResolver();
-            //return new ReferenceResolver($c);
         };
 
         // Format Faker Factory
@@ -78,9 +75,6 @@ class AppServiceProvider implements ServiceProviderInterface
         $container[JsonSchemaAccessorFactoryInterface::class] = function ($c) {
             return new JsonSchemaAccessorFactory($c);
         };
-//        $container[JsonSchemaAccessorFactoryInterface::class] = $container->factory(function ($c) {
-//            return new JsonSchemaAccessorFactory($c);
-//        });
 
         // Generator Factory
         $container[GeneratorFactoryInterface::class] = function ($c) {

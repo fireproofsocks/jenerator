@@ -16,6 +16,7 @@ use Jenerator\Generators\Object\ObjectPatternPropertiesGenerator;
 use Jenerator\Generators\Object\ObjectPropertiesGenerator;
 use Jenerator\Generators\Object\ObjectRequiredPropertiesGenerator;
 use Jenerator\Generators\StringGenerator;
+use Jenerator\ReverseRegex\ReverseRegexInterface;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -49,7 +50,7 @@ class GeneratorProvider implements ServiceProviderInterface
             return new ArrayGenerator($c);
         };
         $container['generator_string'] = function ($c) {
-            return new StringGenerator($c[FormatFakerFactoryInterface::class]);
+            return new StringGenerator($c[FormatFakerFactoryInterface::class], $c[ReverseRegexInterface::class]);
         };
         $container['generator_number'] = function ($c) {
             return new NumberGenerator();

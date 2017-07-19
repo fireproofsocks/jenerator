@@ -16,12 +16,13 @@ See http://docopt.org/
 
 
 ### Standard Formats
-date-time
-email
-hostname
-ipv4
-ipv6
-uri
+
+- date-time
+- email
+- hostname
+- ipv4
+- ipv6
+- uri
 
 // http://json-schema.org/latest/json-schema-validation.html#rfc.section.8.3.7
 // - 8.3.7. uri-reference
@@ -89,97 +90,94 @@ data of that format, but it is recommended that you include other other validati
  
 #### Internet
         
-macaddress
-tld
-slug
-password
-username
+- macaddress
+- tld
+- slug
+- password
+- username
 
 #### Phone
 
-phonenumber
-// https://en.wikipedia.org/wiki/E.164
-phonenumber-e164
-// http://en.wikipedia.org/wiki/International_Mobile_Station_Equipment_Identity
-imei
+- phonenumber
+- phonenumber-e164 // https://en.wikipedia.org/wiki/E.164
+- imei // http://en.wikipedia.org/wiki/International_Mobile_Station_Equipment_Identity
 
 #### Images
 
-image-url
-    // TODO: get height and width... or get a range of sizes
+- image-url // TODO: get height and width... or get a range of sizes
+    
 
 #### File
-mime-type
-file-extension
-    // no dot
+- mime-type
+- file-extension // no dot
+- user-agent
 
-user-agent
+#### People
 
-
-person-title
-person-name
-person-firstname
-person-lastname
+- person-title
+- person-name
+- person-firstname
+- person-lastname
 
 #### I18N (internationalization)
-language-code
-// (see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
-country-code-2
-//-  (see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)
-country-code-3
-currency-code
-locale
+
+- language-code
+- country-code-2 // (see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
+- country-code-3 // (see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)
+- currency-code
+- locale
 
 #### Algorithms : hashes etc
-md5
-sha1
-sha256
-uuid
+- md5
+- sha1
+- sha256
+- uuid
 
 #### Text
-paragraphs
+- paragraphs
 
 #### Date/time
-unix-timestamp
-date
-time
-am-pm
-day-of-week
-monthname
-year
-timezone
+- unix-timestamp
+- date
+- time
+- am-pm
+- day-of-week
+- monthname
+- year
+- timezone
 
 #### Colors
-color-hex
-color-rgb
-color-name
+- color-hex
+- color-rgb
+- color-name
 
 #### Barcodes
-isbn-10
-isbn-13
-ean-8
-ean-13
+- isbn-10
+- isbn-13
+- ean-8
+- ean-13
 
 #### Address
-address-city
-address-streetaddress
-address-streetname
-address-postcode
-address-country
+- address-city
+- address-streetaddress
+- address-streetname
+- address-postcode
+- address-country
 
 #### Latitude/Longitude
-latitude
-longitude
-coordinates
+- latitude
+- longitude
+- coordinates
 
 #### Payment
-creditcard-number
-creditcard-type
-creditcard-exp-date
+
+- creditcard-number
+- creditcard-type
+- creditcard-exp-date
 //        iban
 //            return (new Payment(Factory::create(getLocale())))->iban($countryCode);
 //        });
-swiftbic
+- swiftbic
 
 ## Limitations
 
@@ -190,9 +188,15 @@ swiftbic
 ## TODO prior to release:
 
 1. List all formats in the README
-2. Support for pattern + patternProperties
+X 2. Support for pattern + patternProperties
 X 3. Support for de-referencing + merging schemas
 4. Simplify JsonAccessor interface functions
 5. Simplify dependency injection (avoid injecting the entire container)
 6. Tests written and passing
-7. Array: unique items
+X 7. Array: unique items
+
+## Improvements Desired
+
+- improved `allOf` handling
+- improved `oneOf` handling
+- improved `arrayUnique`
