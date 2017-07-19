@@ -104,7 +104,7 @@ data of that format, but it is recommended that you include other other validati
 
 #### Images
 
-- image-url // TODO: get height and width... or get a range of sizes
+- image-url supports keywords for "width" and "height" to specify integer dimensions.
     
 
 #### File

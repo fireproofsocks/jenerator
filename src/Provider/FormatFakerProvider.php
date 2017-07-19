@@ -45,6 +45,8 @@ class FormatFakerProvider implements ServiceProviderInterface
             return (new Internet(Factory::create(getLocale())))->email();
         });
         $container['hostname'] = $container->protect(function($accessor) {
+            // http://json-schema.org/latest/json-schema-validation.html#rfc.section.8.3.3
+            // see https://dunglas.fr/2014/11/php-7-introducing-a-domain-name-validator-and-making-the-url-validator-stricter/
             return (new Internet(Factory::create(getLocale())))->domainName();
         });
         $container['ipv4'] = $container->protect(function($accessor) {
@@ -63,40 +65,49 @@ class FormatFakerProvider implements ServiceProviderInterface
         $container['uri-reference'] = $container->protect(function($accessor) {
             // TODO: mix this up so we aren't just duplicating the 'uri' keyword
             // Examples:
-            // ftp://ftp.is.co.za/rfc/rfc1808.txt
-            // http://www.ietf.org/rfc/rfc2396.txt
-            // ldap://[2001:db8::7]/c=GB?objectClass?one
-            // mailto:John.Doe@example.com
-            // news:comp.infosystems.www.servers.unix
-            // tel:+1-816-555-1212
-            // telnet://192.0.2.16:80/
-            // urn:oasis:names:specification:docbook:dtd:xml:4.1.2
-            return (new Internet(Factory::create(getLocale())))->url();
+            $examples = [
+                 'ftp://ftp.is.co.za/rfc/rfc1808.txt',
+                 'http://www.ietf.org/rfc/rfc2396.txt',
+                 'ldap://[2001:db8::7]/c=GB?objectClass?one',
+                 'mailto:John.Doe@example.com',
+                 'news:comp.infosystems.www.servers.unix',
+                 'tel:+1-816-555-1212',
+                 'telnet://192.0.2.16:80/',
+                 'urn:oasis:names:specification:docbook:dtd:xml:4.1.2'
+            ];
+            return $examples[array_rand($examples)];
+            //return (new Internet(Factory::create(getLocale())))->url();
         });
         // - 8.3.8. uri-template
         // https://tools.ietf.org/html/rfc6570
         $container['uri-template'] = $container->protect(function($accessor) {
             // Examples:
-            // http://example.com/~{username}/
-            // http://example.com/dictionary/{term:1}/{term}
-            // http://example.com/search{?q,lang}
+            $examples = [
+                'http://example.com/~{username}/',
+                'http://example.com/dictionary/{term:1}/{term}',
+                'http://example.com/search{?q,lang}'
+            ];
+            return $examples[array_rand($examples)];
         });
         // - 8.3.9. json-pointer
         // https://tools.ietf.org/html/rfc6901
         $container['json-pointer'] = $container->protect(function($accessor) {
-            // Examples
-            // ""           // the whole document
-            // "/foo"       ["bar", "baz"]
-            // "/foo/0"     "bar"
-            // "/"          0
-            // "/a~1b"      1
-            // "/c%d"       2
-            // "/e^f"       3
-            // "/g|h"       4
-            // "/i\\j"      5
-            // "/k\"l"      6
-            // "/ "         7
-            // "/m~0n"      8
+            $examples = [
+                '',
+                '/foo',
+                '/foo/0',
+                '/',
+                '/a~1b',
+                '/c%d',
+                '/e^f',
+                '/g|h',
+                '/i\\j',
+                '/k\"l',
+                '/ ',
+                '/m~0n'
+            ];
+
+            return $examples[array_rand($examples)];
         });
 
         // Custom Formats
@@ -133,9 +144,10 @@ class FormatFakerProvider implements ServiceProviderInterface
 
         // Images
         $container['image-url'] = $container->protect(function($accessor) {
-            // TODO: get height and width
             // imageUrl($width = 640, $height = 480, $category = null, $randomize = true, $word = null, $gray = false)
-            return (new Image(Factory::create(getLocale())))->imageUrl();
+            $width = $accessor->getKeyword('width', 480);
+            $height = $accessor->getKeyword('height', 640);
+            return (new Image(Factory::create(getLocale())))->imageUrl($width , $height);
         });
 
         // File
@@ -268,8 +280,12 @@ class FormatFakerProvider implements ServiceProviderInterface
         $container['address-postcode'] = $container->protect(function($accessor) {
             return (new Address(Factory::create(getLocale())))->postcode();
         });
+
         $container['address-country'] = $container->protect(function($accessor) {
-            return (new Address(Factory::create(getLocale())))->country();
+            $faker = Factory::create(getLocale());
+            return $faker->country;
+            // This format appears to be broken in Faker?
+            //return (new Address(Factory::create(getLocale())))->country();
         });
 
         // Latitude/Longitude
@@ -293,9 +309,10 @@ class FormatFakerProvider implements ServiceProviderInterface
         $container['creditcard-exp-date'] = $container->protect(function($accessor) {
             return (new Payment(Factory::create(getLocale())))->creditCardExpirationDateString();
         });
-//        $container['iban'] = $container->protect(function($accessor) {
-//            return (new Payment(Factory::create(getLocale())))->iban($countryCode);
-//        });
+        $container['iban'] = $container->protect(function($accessor) {
+            $countryCode = $accessor->getKeyword('countryCode', 'US');
+            return (new Payment(Factory::create(getLocale())))->iban($countryCode);
+        });
         $container['swiftbic'] = $container->protect(function($accessor) {
             return (new Payment(Factory::create(getLocale())))->swiftBicNumber();
         });

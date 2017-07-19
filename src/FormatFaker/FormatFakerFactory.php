@@ -23,8 +23,6 @@ class FormatFakerFactory implements FormatFakerFactoryInterface
      */
     public function getFakeDataForFormat($format, JsonSchemaAccessorInterface $jsonSchemaAccessor)
     {
-        // TODO: date-format-
-        // TODO: digits, e.g. phonenumber patterns
         try {
             $callable = $this->container->make($format);
             return call_user_func($callable, $jsonSchemaAccessor);

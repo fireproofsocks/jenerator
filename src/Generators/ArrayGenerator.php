@@ -47,8 +47,6 @@ class ArrayGenerator implements GeneratorInterface
      */
     public function getGeneratedFakeValue(JsonSchemaAccessorInterface $schemaAccessor)
     {
-        // TODO: Implement getValue() method.
-        // TODO: uniqueItems
         $array = [];
 
         $this->schemaAccessor = $schemaAccessor;

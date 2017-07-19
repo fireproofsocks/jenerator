@@ -4,8 +4,7 @@
 | Turn on the Lights
 |--------------------------------------------------------------------------
 |
-| In this simple app, we use this file to set up autoloading, create the
-| application, and register the service providers.
+| Create the application, and register the service providers.
 |
 */
 

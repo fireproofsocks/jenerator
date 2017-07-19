@@ -40,10 +40,6 @@ class ShowExampleJsonFromSchemaCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
-
-        $output->writeln($input->getArgument('schema'));
-
         $useCase = $this->serviceContainer->make(GetExampleJsonFromSchemaInterface::class);
 
         $decoder = $this->serviceContainer->make(JsonDecoderInterface::class);
@@ -52,21 +48,7 @@ class ShowExampleJsonFromSchemaCommand extends Command
 
         $example = $useCase->getExampleValueFromSchema($schema);
 
-        $output->writeln(json_encode($example));
-        return;
-        // ...
-        $decoder = $this->serviceContainer->make(JsonDecoderInterface::class);
+        $output->writeln(json_encode($example, JSON_PRETTY_PRINT));
 
-        $schema = $decoder->decodeFile($input->getArgument('schema'));
-
-        $accessor = $this->serviceContainer->make(JsonSchemaAccessorFactoryInterface::class)->getJsonSchemaAccessor($schema);
-
-        //$this->serviceContainer->make(GeneratorFactoryInterface::class)
-
-//        $j = new Jenerator($this->serviceContainer->make(JsonDecoderInterface::class), $this->serviceContainer->make(JsonSchemaAccessorInterface::class), $this->serviceContainer->make(GeneratorFactoryInterface::class));
-//
-//        $x = $j->main($input->getArgument('schema'));
-//
-//        $output->writeln(json_encode($x));
     }
 }

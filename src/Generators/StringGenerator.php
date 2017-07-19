@@ -51,6 +51,7 @@ class StringGenerator implements GeneratorInterface
     }
 
     /**
+     * TODO: put this into its own class
      * @param $min mixed
      * @param $max mixed
      * @return string
