@@ -2,6 +2,7 @@
 
 namespace JeneratorTest;
 
+use Jenerator\JsonSchemaAccessor\JsonSchemaV4Accessor;
 use Jenerator\ServiceContainerInterface;
 
 class TestCase extends \PHPUnit_Framework_TestCase
@@ -15,5 +16,10 @@ class TestCase extends \PHPUnit_Framework_TestCase
     {
         $this->container = include __DIR__ .'/../bootstrap/app.php';
         parent::__construct();
+    }
+
+    protected function getSchemaAccessor(array $schema = [])
+    {
+        return (new JsonSchemaV4Accessor())->hydrate($schema);
     }
 }

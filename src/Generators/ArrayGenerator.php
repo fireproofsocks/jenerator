@@ -3,22 +3,10 @@
 namespace Jenerator\Generators;
 
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
-use Jenerator\ServiceContainerInterface;
 use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
 
 class ArrayGenerator implements GeneratorInterface
 {
-
-    /**
-     * @var ServiceContainerInterface
-     */
-    protected $serviceContainer;
-
-    /**
-     * @var GeneratorFactoryInterface
-     */
-    protected $generatorFactory;
-
     /**
      * @var GetExampleJsonFromSchemaInterface
      */
@@ -35,11 +23,9 @@ class ArrayGenerator implements GeneratorInterface
      */
     protected $max_array_size = 10;
 
-    public function __construct(ServiceContainerInterface $serviceContainer)
+    public function __construct(GetExampleJsonFromSchemaInterface $valueGenerator)
     {
-        $this->serviceContainer = $serviceContainer;
-        $this->generatorFactory = $this->serviceContainer->make(GeneratorFactoryInterface::class);
-        $this->valueGenerator = $this->serviceContainer->make(GetExampleJsonFromSchemaInterface::class);
+        $this->valueGenerator = $valueGenerator;
     }
 
     /**
@@ -90,12 +76,13 @@ class ArrayGenerator implements GeneratorInterface
      */
     protected function isAssociativeArray(array $array)
     {
-        if ([] === $array) return false;
+        if ([] === $array) return true;
         return array_keys($array) !== range(0, count($array) - 1);
     }
 
     /**
      * How many more items do we need to add to this array?
+     * TODO: inject this as its own service?
      * @param array $array
      * @return integer
      */
@@ -105,7 +92,9 @@ class ArrayGenerator implements GeneratorInterface
         $neededItemsCnt = 0;
 
         $min = $this->schemaAccessor->getMinItems();
-        if ($min !== false) {
+        $min = ($min) ? $min : 0;
+
+        if ($min) {
             if ($currentSize < $min) {
                 $neededItemsCnt = $min - $currentSize;
             }
@@ -113,18 +102,12 @@ class ArrayGenerator implements GeneratorInterface
         $max = $this->schemaAccessor->getMaxItems();
         if ($max !== false) {
             if ($currentSize < $max) {
-                if ($min) {
-                    $neededItemsCnt = rand($min, ($max - $currentSize));
-                }
-                else {
-                    $neededItemsCnt = rand(0, ($max - $currentSize));
-                }
-
+                $neededItemsCnt = rand($min, ($max - $currentSize));
             }
         }
         else {
             // No max defined
-            $neededItemsCnt = rand(0, $this->max_array_size);
+            $neededItemsCnt = rand($min, $this->max_array_size);
         }
 
         return $neededItemsCnt;

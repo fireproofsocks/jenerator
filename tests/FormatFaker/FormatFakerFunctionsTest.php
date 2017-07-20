@@ -3,7 +3,6 @@
 namespace JeneratorTest\FormatFaker;
 
 use Jenerator\FormatFaker\FormatFakerFactoryInterface;
-use Jenerator\JsonSchemaAccessor\JsonSchemaV4Accessor;
 use JeneratorTest\TestCase;
 
 use DateTime;
@@ -14,11 +13,6 @@ class FormatFakerFunctionsTest extends TestCase
      * @var FormatFakerFactoryInterface
      */
     protected $faker;
-
-    protected function getSchemaAccessor(array $schema = [])
-    {
-        return (new JsonSchemaV4Accessor())->hydrate($schema);
-    }
 
     protected function validateDate($date, $format = 'Y-m-d H:i:s')
     {

@@ -7,6 +7,7 @@ use Jenerator\FormatFaker\FormatFakerFactoryInterface;
 use Jenerator\Generators\ArrayGenerator;
 use Jenerator\Generators\BooleanGenerator;
 use Jenerator\Generators\EnumGenerator;
+use Jenerator\Generators\GeneratorFactoryInterface;
 use Jenerator\Generators\IntegerGenerator;
 use Jenerator\Generators\NullGenerator;
 use Jenerator\Generators\NumberGenerator;
@@ -17,6 +18,7 @@ use Jenerator\Generators\Object\ObjectPropertiesGenerator;
 use Jenerator\Generators\Object\ObjectRequiredPropertiesGenerator;
 use Jenerator\Generators\StringGenerator;
 use Jenerator\ReverseRegex\ReverseRegexInterface;
+use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -47,7 +49,7 @@ class GeneratorProvider implements ServiceProviderInterface
 
         };
         $container['generator_array'] = function ($c) {
-            return new ArrayGenerator($c);
+            return new ArrayGenerator($c[GetExampleJsonFromSchemaInterface::class]);
         };
         $container['generator_string'] = function ($c) {
             return new StringGenerator($c[FormatFakerFactoryInterface::class], $c[ReverseRegexInterface::class]);
