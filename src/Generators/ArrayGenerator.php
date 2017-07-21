@@ -2,6 +2,7 @@
 
 namespace Jenerator\Generators;
 
+use Jenerator\ItemsCalculator\ItemsCalculatorInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
 use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
 
@@ -11,6 +12,11 @@ class ArrayGenerator implements GeneratorInterface
      * @var GetExampleJsonFromSchemaInterface
      */
     protected $valueGenerator;
+
+    /**
+     * @var ItemsCalculatorInterface
+     */
+    protected $itemsCalculator;
 
     /**
      * @var JsonSchemaAccessorInterface
@@ -23,9 +29,10 @@ class ArrayGenerator implements GeneratorInterface
      */
     protected $max_array_size = 10;
 
-    public function __construct(GetExampleJsonFromSchemaInterface $valueGenerator)
+    public function __construct(GetExampleJsonFromSchemaInterface $valueGenerator, ItemsCalculatorInterface $itemsCalculator)
     {
         $this->valueGenerator = $valueGenerator;
+        $this->itemsCalculator = $itemsCalculator;
     }
 
     /**
@@ -33,37 +40,54 @@ class ArrayGenerator implements GeneratorInterface
      */
     public function getGeneratedFakeValue(JsonSchemaAccessorInterface $schemaAccessor)
     {
-        $array = [];
-
         $this->schemaAccessor = $schemaAccessor;
 
         $itemsSchema = $this->schemaAccessor->getItems();
 
-        if (!$this->isAssociativeArray($itemsSchema)) {
-            // tuple
-            foreach ($itemsSchema as $schema) {
-                $array[] = $this->valueGenerator->getExampleValueFromSchema($schema);
+        $array = ($this->isAssociativeArray($itemsSchema)) ? $this->generateList($itemsSchema) : $this->generateTuple($itemsSchema);
+
+        return ($schemaAccessor->getUniqueItems()) ? array_unique($array) : $array;
+    }
+
+    /**
+     * Generate a tuple, where the nth item validates against the nth schema.
+     * @param $itemsSchema array
+     * @return array
+     */
+    protected function generateTuple(array $itemsSchema)
+    {
+        $array = [];
+
+        $additionalItems = $this->schemaAccessor->getAdditionalItems();
+
+        $cnt = $this->itemsCalculator->getCount(0, $this->schemaAccessor->getMinItems(), $this->schemaAccessor->getMaxItems());
+
+        for ($i = 0; $i < $cnt; $i++ ) {
+            if (isset($itemsSchema[$i])) {
+                $array[] = $this->valueGenerator->getExampleValueFromSchema($itemsSchema[$i]);
             }
-            // additionalItems (only meaningful in the context of a tuple)
-            if ($additionalItems = $this->schemaAccessor->getAdditionalItems()) {
-                // TODO: verify is boolean false or array
-                $cnt = $this->getAdditionalItemsCnt($array);
-                for ($i = 0; $i < $cnt; $i++ ) {
-                    $array[] = $this->valueGenerator->getExampleValueFromSchema($additionalItems);
-                }
+            elseif ($additionalItems) {
+                $array[] = $this->valueGenerator->getExampleValueFromSchema($additionalItems);
             }
-        }
-        else {
-            // standard list
-            $cnt = $this->getAdditionalItemsCnt($array);
-            for ($i = 0; $i < $cnt; $i++ ) {
-                $array[] = $this->valueGenerator->getExampleValueFromSchema($itemsSchema);
+            else {
+                // ??? if you require a minimum # of items but additionalItems is false ???
             }
         }
 
-        // unique
-        if ($schemaAccessor->getUniqueItems()) {
-            $array = array_unique($array);
+        return $array;
+    }
+
+    /**
+     * Generate a standard list where each item validates against the same schema.
+     * @param array $itemsSchema
+     * @return array
+     */
+    protected function generateList(array $itemsSchema)
+    {
+        // standard list
+        $cnt = $this->itemsCalculator->getCount(0, $this->schemaAccessor->getMinItems(), $this->schemaAccessor->getMaxItems());
+        for ($i = 0; $i < $cnt; $i++ ) {
+            $array[] = $this->valueGenerator->getExampleValueFromSchema($itemsSchema);
         }
 
         return $array;
@@ -78,38 +102,5 @@ class ArrayGenerator implements GeneratorInterface
     {
         if ([] === $array) return true;
         return array_keys($array) !== range(0, count($array) - 1);
-    }
-
-    /**
-     * How many more items do we need to add to this array?
-     * TODO: inject this as its own service?
-     * @param array $array
-     * @return integer
-     */
-    protected function getAdditionalItemsCnt(array $array)
-    {
-        $currentSize = count($array);
-        $neededItemsCnt = 0;
-
-        $min = $this->schemaAccessor->getMinItems();
-        $min = ($min) ? $min : 0;
-
-        if ($min) {
-            if ($currentSize < $min) {
-                $neededItemsCnt = $min - $currentSize;
-            }
-        }
-        $max = $this->schemaAccessor->getMaxItems();
-        if ($max !== false) {
-            if ($currentSize < $max) {
-                $neededItemsCnt = rand($min, ($max - $currentSize));
-            }
-        }
-        else {
-            // No max defined
-            $neededItemsCnt = rand($min, $this->max_array_size);
-        }
-
-        return $neededItemsCnt;
     }
 }

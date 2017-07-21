@@ -8,7 +8,8 @@ use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
 /**
  * Interface ReferenceResolverInterface
  *
- * Resolves any usage of the "$ref" keyword
+ * Resolves any usage of the "$ref" keyword to a schema object.  E.g. if $ref points to a remote
+ * URL, this should download the remote file, parse it, and return the schema contained therein.
  *
  * @package Jenerator\ReferenceResolver
  */

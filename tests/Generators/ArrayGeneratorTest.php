@@ -4,15 +4,20 @@ namespace JeneratorTest\Generators;
 
 use Jenerator\Generators\ArrayGenerator;
 use Jenerator\Generators\GeneratorInterface;
+use Jenerator\ItemsCalculator\ItemsCalculatorInterface;
 use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
 use JeneratorTest\TestCase;
 use Mockery;
 
 class ArrayGeneratorTest extends TestCase
 {
+    protected $itemsCalculator;
+
     protected function getInstance(MockValueGenerator $valueGenerator)
     {
-        return new ArrayGenerator($valueGenerator);
+        $this->itemsCalculator = Mockery::mock(ItemsCalculatorInterface::class);
+
+        return new ArrayGenerator($valueGenerator, $this->itemsCalculator);
     }
 
     public function testInstantiation()
@@ -24,28 +29,40 @@ class ArrayGeneratorTest extends TestCase
     {
         $output = range(10, 100, 10);
         $instance = $this->getInstance(new MockValueGenerator($output));
+        $this->itemsCalculator
+            ->shouldReceive('getCount')
+            ->andReturn(5)
+            ->getMock();
         $actual = $instance->getGeneratedFakeValue($this->getSchemaAccessor([
             'minItems' => 3
         ]));
 
-        $this->assertTrue(count($actual) >= 3);
+        $this->assertEquals(5,count($actual));
     }
 
     public function testMaxItems()
     {
         $output = range(10, 100, 10);
         $instance = $this->getInstance(new MockValueGenerator($output));
+        $this->itemsCalculator
+            ->shouldReceive('getCount')
+            ->andReturn(3)
+            ->getMock();
         $actual = $instance->getGeneratedFakeValue($this->getSchemaAccessor([
             'maxItems' => 3
         ]));
 
-        $this->assertTrue(count($actual) <= 3);
+        $this->assertEquals(3,count($actual));
     }
 
     public function testSpecificArrayItemCountIsObeyed()
     {
         $output = range(10, 100, 10);
         $instance = $this->getInstance(new MockValueGenerator($output));
+        $this->itemsCalculator
+            ->shouldReceive('getCount')
+            ->andReturn(3)
+            ->getMock();
         $actual = $instance->getGeneratedFakeValue($this->getSchemaAccessor([
             'minItems' => 3,
             'maxItems' => 3
@@ -58,6 +75,10 @@ class ArrayGeneratorTest extends TestCase
     {
         $output = ['a', 'a', 'b', 'c'];
         $instance = $this->getInstance(new MockValueGenerator($output));
+        $this->itemsCalculator
+            ->shouldReceive('getCount')
+            ->andReturn(3)
+            ->getMock();
         $actual = $instance->getGeneratedFakeValue($this->getSchemaAccessor([
             'minItems' => 3,
             'maxItems' => 3,
@@ -69,7 +90,48 @@ class ArrayGeneratorTest extends TestCase
     
     public function testTuple()
     {
+        $output = [false, 1, 'my string'];
+        $instance = $this->getInstance(new MockValueGenerator($output));
+        $this->itemsCalculator
+            ->shouldReceive('getCount')
+            ->andReturn(3)
+            ->getMock();
+        $actual = $instance->getGeneratedFakeValue($this->getSchemaAccessor([
+            'items' => [
+                ['type' => 'boolean'],
+                ['type' => 'integer'],
+                ['type' => 'string'],
+            ]
+        ]));
 
+        $this->assertEquals($output, $actual);
+    }
+
+    public function testTupleWithAdditionalItems()
+    {
+        $output = [false, 1, 'my string', true, true];
+
+        $instance = $this->getInstance(new MockValueGenerator($output));
+        $this->itemsCalculator
+            ->shouldReceive('getCount')
+            ->andReturn(5) // 2 additional items
+            ->getMock();
+
+        $actual = $instance->getGeneratedFakeValue($this->getSchemaAccessor([
+            'items' => [
+                ['type' => 'boolean'],
+                ['type' => 'integer'],
+                ['type' => 'string'],
+            ],
+            'additionalItems' => [
+                'type' => 'boolean'
+            ],
+            'minItems' => 5,
+            'maxItems' => 5
+        ]));
+
+
+        $this->assertEquals($output, $actual);
     }
 }
 

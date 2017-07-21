@@ -2,16 +2,22 @@
 
 namespace Jenerator\Provider;
 
+use Faker\Factory;
+use Faker\Provider\Lorem;
 use Jenerator\FormatFaker\FormatFakerFactory;
 use Jenerator\FormatFaker\FormatFakerFactoryInterface;
 use Jenerator\Generators\GeneratorFactory;
 use Jenerator\Generators\GeneratorFactoryInterface;
+use Jenerator\ItemsCalculator\ItemsCalculator;
+use Jenerator\ItemsCalculator\ItemsCalculatorInterface;
 use Jenerator\JsonDecoder\JsonDecoder;
 use Jenerator\JsonDecoder\JsonDecoderInterface;
 use Jenerator\JsonEncoder\JsonEncoder;
 use Jenerator\JsonEncoder\JsonEncoderInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorFactory;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorFactoryInterface;
+use Jenerator\RandomString\RandomString;
+use Jenerator\RandomString\RandomStringInterface;
 use Jenerator\ReferenceResolver\ReferenceResolver;
 use Jenerator\ReferenceResolver\ReferenceResolverInterface;
 use Jenerator\ReverseRegex\ReverseRegexImproved;
@@ -47,12 +53,16 @@ class AppServiceProvider implements ServiceProviderInterface
             return new GetExampleJsonFromSchema($c[JsonSchemaAccessorFactoryInterface::class], $c[GeneratorFactoryInterface::class]);
         };
 
+        $container[ItemsCalculatorInterface::class] = function ($c) {
+            return new ItemsCalculator();
+        };
+
         $container[JsonDecoderInterface::class] = function () {
             return new JsonDecoder();
         };
 
-        $container[JsonEncoderInterface::class] = function () {
-            return new JsonEncoder();
+        $container[RandomStringInterface::class] = function ($c) {
+            return new RandomString(new Lorem(Factory::create(getLocale())));
         };
 
         $container[ReverseRegexInterface::class] = function ($c) {

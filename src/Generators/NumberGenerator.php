@@ -18,10 +18,12 @@ class NumberGenerator extends IntegerGenerator implements GeneratorInterface
         $minimum = $this->getMinimum();
         $maximum = $this->getMaximum();
 
-        $number = Base::randomFloat(null, $minimum, $maximum);
+        $decimals = $schemaAccessor->getKeyword('decimals', 2);
+
+        $number = Base::randomFloat($decimals, $minimum, $maximum);
 
         if ($multipleOf = $this->schemaAccessor->getMultipleOf()) {
-            $number = $this->roundToNearestMultiple($number, $multipleOf);
+            $number = $this->roundToNearestMultiple($number, $multipleOf, $minimum, $maximum);
         }
 
         return floatval($number);
@@ -37,7 +39,7 @@ class NumberGenerator extends IntegerGenerator implements GeneratorInterface
         $maximum = ($maximum === false) ? 2147483647 : $maximum;
 
         if ($this->schemaAccessor->getExclusiveMaximum()) {
-            $maximum = $maximum - 1;
+            $maximum = $maximum - 0.1;
         }
 
         return $maximum;
@@ -53,7 +55,7 @@ class NumberGenerator extends IntegerGenerator implements GeneratorInterface
         $minimum = ($minimum === false) ? -2147483647 : $minimum;
 
         if ($this->schemaAccessor->getExclusiveMinimum()) {
-            $minimum = $minimum + 1;
+            $minimum = $minimum + 0.1;
         }
 
         return $minimum;

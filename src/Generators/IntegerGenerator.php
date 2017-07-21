@@ -26,7 +26,7 @@ class IntegerGenerator implements GeneratorInterface
         $number = Base::numberBetween($minimum, $maximum);
 
         if ($multipleOf = $this->schemaAccessor->getMultipleOf()) {
-            $number = $this->roundToNearestMultiple($number, $multipleOf);
+            $number = $this->roundToNearestMultiple($number, $multipleOf, $minimum, $maximum);
         }
 
         return (int) $number;
@@ -65,13 +65,21 @@ class IntegerGenerator implements GeneratorInterface
     }
 
     /**
+     * Some futzing to correct for rounding that may land the number outside the range.
+     *
      * @param $number number
      * @param $multipleOf number
+     * @param $minimum
+     * @param $maximum
      * @return float
      */
-    protected function roundToNearestMultiple($number, $multipleOf)
+    protected function roundToNearestMultiple($number, $multipleOf, $minimum, $maximum)
     {
-        return round($number/$multipleOf) * $multipleOf;
+        $rounded = round($number/$multipleOf) * $multipleOf;
+        $rounded = ($rounded > $maximum) ? $rounded - $multipleOf : $rounded;
+        $rounded = ($rounded < $minimum) ? $rounded + $multipleOf : $rounded;
+
+        return $rounded;
     }
 
 }

@@ -39,10 +39,6 @@ class ObjectPatternPropertiesGenerator implements GeneratorInterface
     }
 
     /**
-     * Some situations will not be covered by the other generators, e.g. if the schema has a minProperties and
-     * only patternProperties defined (no regular properties), then you'd need to supply a regex generator OR
-     * some sample field names.
-     *
      * @inheritdoc
      */
     public function getGeneratedFakeValue(JsonSchemaAccessorInterface $schemaAccessor, $obj = null)

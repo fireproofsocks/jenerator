@@ -2,11 +2,10 @@
 
 namespace Jenerator\Generators\Object;
 
-use Jenerator\Generators\GeneratorFactoryInterface;
 use Jenerator\Generators\GeneratorInterface;
-use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorFactoryInterface;
+use Jenerator\ItemsCalculator\ItemsCalculatorInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
-use Jenerator\ServiceContainerInterface;
+use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
 
 class ObjectAdditionalPropertiesGenerator implements GeneratorInterface
 {
@@ -16,9 +15,14 @@ class ObjectAdditionalPropertiesGenerator implements GeneratorInterface
     protected $next;
 
     /**
-     * @var ServiceContainerInterface
+     * @var GetExampleJsonFromSchemaInterface
      */
-    protected $serviceContainer;
+    protected $valueGenerator;
+
+    /**
+     * @var ItemsCalculatorInterface
+     */
+    protected $itemsCalculator;
 
     /**
      * @var JsonSchemaAccessorInterface
@@ -26,16 +30,16 @@ class ObjectAdditionalPropertiesGenerator implements GeneratorInterface
     protected $schemaAccessor;
 
     /**
-     * TODO: from Config
-     * @var int
+     * ObjectAdditionalPropertiesGenerator constructor.
+     * @param GeneratorInterface $next
+     * @param GetExampleJsonFromSchemaInterface $valueGenerator
+     * @param ItemsCalculatorInterface $itemsCalculator
      */
-    protected $maxAdditionalProperties = 10;
-
-
-    public function __construct(GeneratorInterface $next, ServiceContainerInterface $serviceContainer)
+    public function __construct(GeneratorInterface $next, GetExampleJsonFromSchemaInterface $valueGenerator, ItemsCalculatorInterface $itemsCalculator)
     {
         $this->next = $next;
-        $this->serviceContainer = $serviceContainer;
+        $this->valueGenerator = $valueGenerator;
+        $this->itemsCalculator = $itemsCalculator;
     }
 
     /**
@@ -45,59 +49,30 @@ class ObjectAdditionalPropertiesGenerator implements GeneratorInterface
     {
         $this->schemaAccessor = $schemaAccessor;
 
-        $obj = ($obj) ? $obj : new \stdClass();
+        $obj = ($obj) ?: new \stdClass();
 
         $additionalProperties = $this->schemaAccessor->getAdditionalProperties();
 
+        // empty array is valid, but it would evaluate to false
         if ($additionalProperties !== false) {
-            $subAccessor = $this->serviceContainer->make(JsonSchemaAccessorFactoryInterface::class)->getJsonSchemaAccessor($additionalProperties);
-            $generator = $this->serviceContainer->make(GeneratorFactoryInterface::class)->getGenerator($subAccessor);
-            $additionalPropertiesCnt = $this->getAdditionalPropertiesCnt($obj);
+
+            $additionalPropertiesCnt = $this->itemsCalculator->getCount(count((array) $obj), $this->schemaAccessor->getMinProperties(), $this->schemaAccessor->getMaxProperties());
+
             for ($i = 0; $i < $additionalPropertiesCnt; $i++) {
                 $key = $this->getRandomPropertyName();
+                // TODO: this can end up adding zero properties if it happens to return property names that are taken
                 if (!property_exists($obj, $key)) {
-                    $obj->{$key} = $generator->getGeneratedFakeValue($subAccessor);
+                    $obj->{$key} = $this->valueGenerator->getExampleValueFromSchema($additionalProperties);
                 }
             }
         }
 
-
         return $this->next->getGeneratedFakeValue($schemaAccessor, $obj);
     }
 
-    /**
-     * How many more properties should this object have?
-     * @param $obj
-     * @return int
-     */
-    protected function getAdditionalPropertiesCnt($obj)
-    {
-        $currentPropertiesCnt = count(array_keys((array) $obj));
-
-        $min = $this->schemaAccessor->getMinProperties();
-        if ($min !== false) {
-            if ($min > $currentPropertiesCnt) {
-                $min = $min - $currentPropertiesCnt;
-            }
-        }
-        else {
-            $min = 0;
-        }
-
-        $max = $this->schemaAccessor->getMaxProperties();
-        if ($max !== false) {
-            if ($max < $currentPropertiesCnt) {
-                $max = $max - $currentPropertiesCnt;
-            }
-        }
-        else {
-            $max = $this->maxAdditionalProperties;
-        }
-
-        return rand($min, $max);
-    }
 
     /**
+     * TODO: isolate into its own class
      * @return bool|string
      */
     protected function getRandomPropertyName()

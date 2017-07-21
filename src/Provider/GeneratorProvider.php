@@ -17,6 +17,8 @@ use Jenerator\Generators\Object\ObjectPatternPropertiesGenerator;
 use Jenerator\Generators\Object\ObjectPropertiesGenerator;
 use Jenerator\Generators\Object\ObjectRequiredPropertiesGenerator;
 use Jenerator\Generators\StringGenerator;
+use Jenerator\ItemsCalculator\ItemsCalculatorInterface;
+use Jenerator\RandomString\RandomStringInterface;
 use Jenerator\ReverseRegex\ReverseRegexInterface;
 use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
 use Pimple\Container;
@@ -43,16 +45,16 @@ class GeneratorProvider implements ServiceProviderInterface
             // a chain of multiple classes
             $next = new ObjectGeneratorFinal();
             $next = new ObjectPatternPropertiesGenerator($next, $c);
-            $next = new ObjectRequiredPropertiesGenerator($next, $c);
-            $next = new ObjectAdditionalPropertiesGenerator($next, $c);
+            $next = new ObjectRequiredPropertiesGenerator($next, $c[GetExampleJsonFromSchemaInterface::class]);
+            $next = new ObjectAdditionalPropertiesGenerator($next, $c[GetExampleJsonFromSchemaInterface::class], $c[ItemsCalculatorInterface::class]);
             return new ObjectPropertiesGenerator($next, $c);
 
         };
         $container['generator_array'] = function ($c) {
-            return new ArrayGenerator($c[GetExampleJsonFromSchemaInterface::class]);
+            return new ArrayGenerator($c[GetExampleJsonFromSchemaInterface::class], $c[ItemsCalculatorInterface::class]);
         };
         $container['generator_string'] = function ($c) {
-            return new StringGenerator($c[FormatFakerFactoryInterface::class], $c[ReverseRegexInterface::class]);
+            return new StringGenerator($c[FormatFakerFactoryInterface::class], $c[ReverseRegexInterface::class], $c[RandomStringInterface::class]);
         };
         $container['generator_number'] = function ($c) {
             return new NumberGenerator();

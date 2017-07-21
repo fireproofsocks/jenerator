@@ -2,24 +2,38 @@
 
 namespace Jenerator\Generators\Object;
 
-use Jenerator\Generators\GeneratorFactoryInterface;
 use Jenerator\Generators\GeneratorInterface;
-use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorFactoryInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
 use Jenerator\ServiceContainerInterface;
 use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
 
+/**
+ * Class ObjectRequiredPropertiesGenerator
+ *
+ * The job of this class is to create on the object all properties listed in the schema's "required" array
+ * that did not have explicit schemas defined for them in the "properties" object.
+ * Properties are generated from "patternProperties" or by the schema defined in the "additionalProperties".
+ *
+ * This class should solve for the case like this:
+ * {
+ *   "type": "object",
+ *   "required": ["str_name", "some_extra"],
+ *   "patternProperties": {
+ *       "^str_.*": {"type": "string"},
+ *   },
+ *   "additionalProperties": {
+ *      {"type": "string"}
+ *   }
+ * }
+ *
+ * @package Jenerator\Generators\Object
+ */
 class ObjectRequiredPropertiesGenerator implements GeneratorInterface
 {
     /**
      * @var GeneratorInterface
      */
     protected $next;
-
-    /**
-     * @var ServiceContainerInterface
-     */
-    protected $serviceContainer;
 
     /**
      * @var GetExampleJsonFromSchemaInterface
@@ -31,11 +45,10 @@ class ObjectRequiredPropertiesGenerator implements GeneratorInterface
      */
     protected $schemaAccessor;
 
-    public function __construct(GeneratorInterface $next, ServiceContainerInterface $serviceContainer)
+    public function __construct(GeneratorInterface $next, GetExampleJsonFromSchemaInterface $valueGenerator)
     {
         $this->next = $next;
-        $this->serviceContainer = $serviceContainer;
-        $this->valueGenerator = $this->serviceContainer->make(GetExampleJsonFromSchemaInterface::class);
+        $this->valueGenerator = $valueGenerator;
     }
 
     public function getGeneratedFakeValue(JsonSchemaAccessorInterface $schemaAccessor, $obj = null)
@@ -60,10 +73,10 @@ class ObjectRequiredPropertiesGenerator implements GeneratorInterface
                     $obj->{$r} = $this->valueGenerator->getExampleValueFromSchema($additionalPropertiesSchema);
                 }
                 else {
-                    // ??? error?
+                    // ??? error???
                 }
 
-                // propertyNames (v6)
+                // TODO: propertyNames (v6)
             }
         }
 
