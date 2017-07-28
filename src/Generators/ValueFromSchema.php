@@ -1,11 +1,10 @@
 <?php
 
-namespace Jenerator\UseCases;
+namespace Jenerator\Generators;
 
-use Jenerator\Generators\GeneratorFactoryInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorFactoryInterface;
 
-class GetExampleJsonFromSchema implements GetExampleJsonFromSchemaInterface
+class ValueFromSchema implements ValueFromSchemaInterface
 {
     protected $jsonDecoder;
     protected $jsonEncoder;
@@ -14,7 +13,7 @@ class GetExampleJsonFromSchema implements GetExampleJsonFromSchemaInterface
     protected $transformersContainer;
 
     /**
-     * GetExampleJsonFromSchema constructor.
+     * ValueFromSchema constructor.
      * @param JsonSchemaAccessorFactoryInterface $schemaAccessorBuilder
      * @param GeneratorFactoryInterface $generatorBuilder
      */

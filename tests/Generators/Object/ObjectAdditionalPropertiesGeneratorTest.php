@@ -6,7 +6,7 @@ use Jenerator\Generators\GeneratorInterface;
 use Jenerator\Generators\Object\ObjectAdditionalPropertiesGenerator;
 use Jenerator\Generators\Object\ObjectGeneratorFinal;
 use Jenerator\ItemsCalculator\ItemsCalculatorInterface;
-use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
+use Jenerator\Generators\ValueFromSchemaInterface;
 use JeneratorTest\TestCase;
 use Mockery;
 
@@ -17,7 +17,7 @@ class ObjectAdditionalPropertiesGeneratorTest extends TestCase
 
     protected function getInstance()
     {
-        $this->valueGenerator = Mockery::mock(GetExampleJsonFromSchemaInterface::class);
+        $this->valueGenerator = Mockery::mock(ValueFromSchemaInterface::class);
         $this->itemsCalculator = Mockery::mock(ItemsCalculatorInterface::class);
         $next = new ObjectGeneratorFinal();
 

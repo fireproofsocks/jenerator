@@ -4,12 +4,11 @@ namespace Jenerator\Generators;
 
 use Jenerator\ItemsCalculator\ItemsCalculatorInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
-use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
 
 class ArrayGenerator implements GeneratorInterface
 {
     /**
-     * @var GetExampleJsonFromSchemaInterface
+     * @var ValueFromSchemaInterface
      */
     protected $valueGenerator;
 
@@ -29,7 +28,7 @@ class ArrayGenerator implements GeneratorInterface
      */
     protected $max_array_size = 10;
 
-    public function __construct(GetExampleJsonFromSchemaInterface $valueGenerator, ItemsCalculatorInterface $itemsCalculator)
+    public function __construct(ValueFromSchemaInterface $valueGenerator, ItemsCalculatorInterface $itemsCalculator)
     {
         $this->valueGenerator = $valueGenerator;
         $this->itemsCalculator = $itemsCalculator;
@@ -85,6 +84,7 @@ class ArrayGenerator implements GeneratorInterface
     protected function generateList(array $itemsSchema)
     {
         // standard list
+        $array = [];
         $cnt = $this->itemsCalculator->getCount(0, $this->schemaAccessor->getMinItems(), $this->schemaAccessor->getMaxItems());
         for ($i = 0; $i < $cnt; $i++ ) {
             $array[] = $this->valueGenerator->getExampleValueFromSchema($itemsSchema);

@@ -12,8 +12,6 @@ use Jenerator\ItemsCalculator\ItemsCalculator;
 use Jenerator\ItemsCalculator\ItemsCalculatorInterface;
 use Jenerator\JsonDecoder\JsonDecoder;
 use Jenerator\JsonDecoder\JsonDecoderInterface;
-use Jenerator\JsonEncoder\JsonEncoder;
-use Jenerator\JsonEncoder\JsonEncoderInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorFactory;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorFactoryInterface;
 use Jenerator\RandomString\RandomString;
@@ -23,12 +21,8 @@ use Jenerator\ReferenceResolver\ReferenceResolverInterface;
 use Jenerator\ReverseRegex\ReverseRegexImproved;
 use Jenerator\ReverseRegex\ReverseRegexInterface;
 use Jenerator\ServiceContainer;
-use Jenerator\UseCases\AppendExamplesToSchema;
-use Jenerator\UseCases\AppendExamplesToSchemaInterface;
-use Jenerator\UseCases\CreateExampleJsonFilesFromSchema;
-use Jenerator\UseCases\CreateExampleJsonFilesFromSchemaInterface;
-use Jenerator\UseCases\GetExampleJsonFromSchema;
-use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
+use Jenerator\Generators\ValueFromSchema;
+use Jenerator\Generators\ValueFromSchemaInterface;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use RegRev\RegRev;
@@ -41,16 +35,8 @@ class AppServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $container)
     {
-        $container[AppendExamplesToSchemaInterface::class] = function () {
-            return new AppendExamplesToSchema();
-        };
-
-        $container[CreateExampleJsonFilesFromSchemaInterface::class] = function () {
-            return new CreateExampleJsonFilesFromSchema();
-        };
-
-        $container[GetExampleJsonFromSchemaInterface::class] = function ($c) {
-            return new GetExampleJsonFromSchema($c[JsonSchemaAccessorFactoryInterface::class], $c[GeneratorFactoryInterface::class]);
+        $container[ValueFromSchemaInterface::class] = function ($c) {
+            return new ValueFromSchema($c[JsonSchemaAccessorFactoryInterface::class], $c[GeneratorFactoryInterface::class]);
         };
 
         $container[ItemsCalculatorInterface::class] = function ($c) {

@@ -5,7 +5,7 @@ namespace Jenerator\Generators\Object;
 use Jenerator\Generators\GeneratorInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
 use Jenerator\ServiceContainerInterface;
-use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
+use Jenerator\Generators\ValueFromSchemaInterface;
 
 class ObjectPropertiesGenerator implements GeneratorInterface
 {
@@ -25,7 +25,7 @@ class ObjectPropertiesGenerator implements GeneratorInterface
     protected $schemaAccessor;
 
     /**
-     * @var GetExampleJsonFromSchemaInterface
+     * @var ValueFromSchemaInterface
      */
     protected $valueGenerator;
 
@@ -33,7 +33,7 @@ class ObjectPropertiesGenerator implements GeneratorInterface
     {
         $this->next = $next;
         $this->serviceContainer = $serviceContainer;
-        $this->valueGenerator = $this->serviceContainer->make(GetExampleJsonFromSchemaInterface::class);
+        $this->valueGenerator = $this->serviceContainer->make(ValueFromSchemaInterface::class);
     }
     /**
      * @inheritDoc

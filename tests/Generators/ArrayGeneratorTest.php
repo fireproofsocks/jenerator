@@ -5,7 +5,7 @@ namespace JeneratorTest\Generators;
 use Jenerator\Generators\ArrayGenerator;
 use Jenerator\Generators\GeneratorInterface;
 use Jenerator\ItemsCalculator\ItemsCalculatorInterface;
-use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
+use Jenerator\Generators\ValueFromSchemaInterface;
 use JeneratorTest\TestCase;
 use Mockery;
 
@@ -135,7 +135,7 @@ class ArrayGeneratorTest extends TestCase
     }
 }
 
-class MockValueGenerator implements GetExampleJsonFromSchemaInterface
+class MockValueGenerator implements ValueFromSchemaInterface
 {
     protected $i = 0;
     protected $output = [];

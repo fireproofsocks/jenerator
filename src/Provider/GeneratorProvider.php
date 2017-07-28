@@ -7,7 +7,6 @@ use Jenerator\FormatFaker\FormatFakerFactoryInterface;
 use Jenerator\Generators\ArrayGenerator;
 use Jenerator\Generators\BooleanGenerator;
 use Jenerator\Generators\EnumGenerator;
-use Jenerator\Generators\GeneratorFactoryInterface;
 use Jenerator\Generators\IntegerGenerator;
 use Jenerator\Generators\NullGenerator;
 use Jenerator\Generators\NumberGenerator;
@@ -20,7 +19,7 @@ use Jenerator\Generators\StringGenerator;
 use Jenerator\ItemsCalculator\ItemsCalculatorInterface;
 use Jenerator\RandomString\RandomStringInterface;
 use Jenerator\ReverseRegex\ReverseRegexInterface;
-use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
+use Jenerator\Generators\ValueFromSchemaInterface;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -45,13 +44,13 @@ class GeneratorProvider implements ServiceProviderInterface
             // a chain of multiple classes
             $next = new ObjectGeneratorFinal();
             $next = new ObjectPatternPropertiesGenerator($next, $c);
-            $next = new ObjectRequiredPropertiesGenerator($next, $c[GetExampleJsonFromSchemaInterface::class]);
-            $next = new ObjectAdditionalPropertiesGenerator($next, $c[GetExampleJsonFromSchemaInterface::class], $c[ItemsCalculatorInterface::class]);
+            $next = new ObjectRequiredPropertiesGenerator($next, $c[ValueFromSchemaInterface::class]);
+            $next = new ObjectAdditionalPropertiesGenerator($next, $c[ValueFromSchemaInterface::class], $c[ItemsCalculatorInterface::class]);
             return new ObjectPropertiesGenerator($next, $c);
 
         };
         $container['generator_array'] = function ($c) {
-            return new ArrayGenerator($c[GetExampleJsonFromSchemaInterface::class], $c[ItemsCalculatorInterface::class]);
+            return new ArrayGenerator($c[ValueFromSchemaInterface::class], $c[ItemsCalculatorInterface::class]);
         };
         $container['generator_string'] = function ($c) {
             return new StringGenerator($c[FormatFakerFactoryInterface::class], $c[ReverseRegexInterface::class], $c[RandomStringInterface::class]);

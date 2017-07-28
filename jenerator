@@ -7,9 +7,15 @@ use Symfony\Component\Console\Application;
 
 $application = new Application();
 
-// ... register commands
+/*
+|--------------------------------------------------------------------------
+| Register Commands
+|--------------------------------------------------------------------------
+|
+| Add classes here...
+|
+*/
 $application->add(new \Jenerator\Command\ShowExampleJsonFromSchemaCommand($container));
-$application->add(new \Jenerator\Command\CreateExampleJsonFilesFromSchemaCommand($container));
-$application->add(new \Jenerator\Command\AppendExamplesToSchemaCommand($container));
+
 
 $application->run();

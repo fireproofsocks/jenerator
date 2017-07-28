@@ -2,7 +2,6 @@
 
 namespace Jenerator\Generators;
 
-use Faker\Provider\Lorem;
 use Jenerator\FormatFaker\FormatFakerFactoryInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
 use Jenerator\RandomString\RandomStringInterface;

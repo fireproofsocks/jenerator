@@ -2,15 +2,10 @@
 
 namespace Jenerator\Command;
 
-use Jenerator\Generators\GeneratorFactoryInterface;
-use Jenerator\Jenerator;
 use Jenerator\JsonDecoder\JsonDecoderInterface;
-use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorFactoryInterface;
-use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
 use Jenerator\ServiceContainerInterface;
-use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
+use Jenerator\Generators\ValueFromSchemaInterface;
 use Pimple\Container;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -40,7 +35,7 @@ class ShowExampleJsonFromSchemaCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $useCase = $this->serviceContainer->make(GetExampleJsonFromSchemaInterface::class);
+        $useCase = $this->serviceContainer->make(ValueFromSchemaInterface::class);
 
         $decoder = $this->serviceContainer->make(JsonDecoderInterface::class);
 

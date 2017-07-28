@@ -1,0 +1,29 @@
+# https://docs.travis-ci.com/user/languages/php/
+language: php
+sudo: required
+dist: trusty
+group: edge
+php:
+  - '5.6'
+  - '7.0'
+  - '7.1'
+  - hhvm-3.3
+  - hhvm-3.6
+  - hhvm-3.9
+  - hhvm-3.12
+  - hhvm-3.15
+  - hhvm-3.18
+
+before_script:
+    - travis_retry composer self-update
+    - travis_retry composer install --no-interaction --prefer-source --dev
+
+script:
+    - vendor/bin/phpunit --coverage-clover=coverage.xml
+
+install:
+  - composer install
+  - composer dump-autoload
+
+after_success:
+    - bash <(curl -s https://codecov.io/bash)

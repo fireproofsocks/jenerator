@@ -5,7 +5,7 @@ namespace Jenerator\Generators\Object;
 use Jenerator\Generators\GeneratorInterface;
 use Jenerator\ItemsCalculator\ItemsCalculatorInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
-use Jenerator\UseCases\GetExampleJsonFromSchemaInterface;
+use Jenerator\Generators\ValueFromSchemaInterface;
 
 class ObjectAdditionalPropertiesGenerator implements GeneratorInterface
 {
@@ -15,7 +15,7 @@ class ObjectAdditionalPropertiesGenerator implements GeneratorInterface
     protected $next;
 
     /**
-     * @var GetExampleJsonFromSchemaInterface
+     * @var ValueFromSchemaInterface
      */
     protected $valueGenerator;
 
@@ -32,10 +32,10 @@ class ObjectAdditionalPropertiesGenerator implements GeneratorInterface
     /**
      * ObjectAdditionalPropertiesGenerator constructor.
      * @param GeneratorInterface $next
-     * @param GetExampleJsonFromSchemaInterface $valueGenerator
+     * @param ValueFromSchemaInterface $valueGenerator
      * @param ItemsCalculatorInterface $itemsCalculator
      */
-    public function __construct(GeneratorInterface $next, GetExampleJsonFromSchemaInterface $valueGenerator, ItemsCalculatorInterface $itemsCalculator)
+    public function __construct(GeneratorInterface $next, ValueFromSchemaInterface $valueGenerator, ItemsCalculatorInterface $itemsCalculator)
     {
         $this->next = $next;
         $this->valueGenerator = $valueGenerator;

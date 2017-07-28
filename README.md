@@ -3,19 +3,33 @@
 This package generates JSON objects from [JSON Schema](http://json-schema.org/) definitions and fills them with random fake data.  This is useful for creating sample seed data that must be in a specific structure, e.g. useful for API 
 responses.
 
+The functionality is similar to the [json-schema-faker](https://github.com/json-schema-faker/json-schema-faker) 
+NodeJs package.
 
-## Commands
+## Installation
+
+The recommended way to install this code is via [Composer](https://getcomposer.org/)
+
+## Usage
+
+### In Code
+
+
+### Command Line
+
+For command line usage, move into the `jenerator/` directory and call its command.
 
 ```
 php jenerator example:show path/to/schema.json
 ```
 
-See http://docopt.org/
-
 ## Supported Formats
 
 
 ### Standard Formats
+
+The JSON Schema spec defines some formats that all compliant validators _should_ respect.  Jenerator will produce 
+appropriately formatted mock data for each of these standard formats  
 
 - date-time
 - email
@@ -23,52 +37,18 @@ See http://docopt.org/
 - ipv4
 - ipv6
 - uri
-
-// http://json-schema.org/latest/json-schema-validation.html#rfc.section.8.3.7
-// - 8.3.7. uri-reference
-// Examples: https://tools.ietf.org/html/rfc3986#section-1.1.2
-uri-reference
-    // TODO: mix this up so we aren't just duplicating the 'uri' keyword
-    // Examples:
-    // ftp://ftp.is.co.za/rfc/rfc1808.txt
-    // http://www.ietf.org/rfc/rfc2396.txt
-    // ldap://[2001:db8::7]/c=GB?objectClass?one
-    // mailto:John.Doe@example.com
-    // news:comp.infosystems.www.servers.unix
-    // tel:+1-816-555-1212
-    // telnet://192.0.2.16:80/
-    // urn:oasis:names:specification:docbook:dtd:xml:4.1.2
-// - 8.3.8. uri-template
-// https://tools.ietf.org/html/rfc6570
-uri-template
-    // Examples:
-    // http://example.com/~{username}/
-    // http://example.com/dictionary/{term:1}/{term}
-    // http://example.com/search{?q,lang}
-// - 8.3.9. json-pointer
-// https://tools.ietf.org/html/rfc6901
-json-pointer
-    // Examples
-    // ""           // the whole document
-    // "/foo"       ["bar", "baz"]
-    // "/foo/0"     "bar"
-    // "/"          0
-    // "/a~1b"      1
-    // "/c%d"       2
-    // "/e^f"       3
-    // "/g|h"       4
-    // "/i\\j"      5
-    // "/k\"l"      6
-    // "/ "         7
-    // "/m~0n"      8
-});
+- uri-reference See http://json-schema.org/latest/json-schema-validation.html#rfc.section.8.3.7 and https://tools.ietf.org/html/rfc3986#section-1.1.2
+- uri-template See https://tools.ietf.org/html/rfc6570
+- json-pointer See https://tools.ietf.org/html/rfc6901
 
 ### Custom Formats
 
-These are not supported by the official JSON Schema spec.  Validators _should_ ignore these custom formats and any 
+The following formats are custom and are not defined by the official JSON Schema spec.  They exist solely to 
+facilitate the generation of realistic mock data.  Compliant validators _should_ ignore these custom formats and any 
 other custom keywords they may reference.  Using a custom format is useful way to have this library generate example 
-data of that format, but it is recommended that you include other other validation keywords that will ensure that any
- example data will properly validate.  For example, you may use a schema such as this to indicate a year:
+data of that format, but it is recommended that you include other other validation keywords that will ensure that any 
+example data will properly validate.  For example, you may use a schema such as this to indicate a year:
+
  ```
  {
     "type": "string",
@@ -174,29 +154,23 @@ data of that format, but it is recommended that you include other other validati
 - creditcard-number
 - creditcard-type
 - creditcard-exp-date
+
+// TODO:
 //        iban
 //            return (new Payment(Factory::create(getLocale())))->iban($countryCode);
 //        });
+
 - swiftbic
 
-## Limitations
+## Known Limitations
 
-- The jenerator does not support the "not" keyword
-- Unreliable support for the "oneOf" keyword
-- No support for depends on keyword
+**The jenerator does not support the "not" keyword.** The value generator will generate a value, but it does not 
+attempt to validate the result against any schema defined in the the `not` keyword; it does not attempt to 
+re-generate a value if the generated value validates against the `not` schema. 
 
-## TODO prior to release:
+**Unreliable support for the "oneOf" keyword.**  The value generator will pick one of the listed schemas, but it does
+ not validate the generated value against the other schemas and re-generate 
+ 
+**No support for `dependencies` keyword**
 
-1. List all formats in the README
-X 2. Support for pattern + patternProperties
-X 3. Support for de-referencing + merging schemas
-4. Simplify JsonAccessor interface functions
-5. Simplify dependency injection (avoid injecting the entire container)
-6. Tests written and passing
-X 7. Array: unique items
-
-## Improvements Desired
-
-- improved `allOf` handling
-- improved `oneOf` handling
-- improved `arrayUnique`
+**`arrayUnique` may remove items from an array that may cause the array size to fall below the `minItems` requirement.

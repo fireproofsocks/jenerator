@@ -3,7 +3,6 @@
 namespace Jenerator\Generators;
 
 use Faker\Provider\Base;
-use Jenerator\FormatFaker\FormatFakerFactoryInterface;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
 
 class NumberGenerator extends IntegerGenerator implements GeneratorInterface

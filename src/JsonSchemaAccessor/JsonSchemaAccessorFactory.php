@@ -3,7 +3,6 @@
 namespace Jenerator\JsonSchemaAccessor;
 
 use Jenerator\Exceptions\SchemaAccessorException;
-use Jenerator\JsonDecoder\JsonDecoderInterface;
 use Jenerator\ReferenceResolver\ReferenceResolverInterface;
 use Pimple\Container;
 
