@@ -43,7 +43,7 @@ class GeneratorProvider implements ServiceProviderInterface
             // In order to facilitate easier testing and support SRP, we split the creation of objects across
             // a chain of multiple classes
             $next = new ObjectGeneratorFinal();
-            $next = new ObjectPatternPropertiesGenerator($next, $c);
+            $next = new ObjectPatternPropertiesGenerator($next, $c[ValueFromSchemaInterface::class], $c[ReverseRegexInterface::class]);
             $next = new ObjectRequiredPropertiesGenerator($next, $c[ValueFromSchemaInterface::class]);
             $next = new ObjectAdditionalPropertiesGenerator($next, $c[ValueFromSchemaInterface::class], $c[ItemsCalculatorInterface::class]);
             return new ObjectPropertiesGenerator($next, $c);

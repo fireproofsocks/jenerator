@@ -4,12 +4,12 @@ namespace Jenerator\Generators;
 
 use Jenerator\Exceptions\InvalidTypeException;
 use Jenerator\JsonSchemaAccessor\JsonSchemaAccessorInterface;
-use Pimple\Container;
+use Jenerator\ServiceContainerInterface;
 
 class GeneratorFactory implements GeneratorFactoryInterface
 {
     /**
-     * @var Container
+     * @var ServiceContainerInterface
      */
     protected $serviceContainer;
 
@@ -19,7 +19,7 @@ class GeneratorFactory implements GeneratorFactoryInterface
      */
     protected $validTypes = ['object', 'array', 'string', 'number', 'integer', 'boolean', 'null'];
 
-    public function __construct(Container $serviceContainer)
+    public function __construct(ServiceContainerInterface $serviceContainer)
     {
         $this->serviceContainer = $serviceContainer;
     }
@@ -42,7 +42,7 @@ class GeneratorFactory implements GeneratorFactoryInterface
         }
 
         try {
-            $generator = $this->serviceContainer->offsetGet('generator_' . $type);
+            $generator = $this->serviceContainer->make('generator_' . $type);
         } catch (\Exception $e) {
             throw new InvalidTypeException('The type "' . $type . '" is not a valid JSON Schema type', $e->getCode(),
                 $e);

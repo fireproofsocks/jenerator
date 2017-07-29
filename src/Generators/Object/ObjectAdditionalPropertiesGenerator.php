@@ -35,8 +35,11 @@ class ObjectAdditionalPropertiesGenerator implements GeneratorInterface
      * @param ValueFromSchemaInterface $valueGenerator
      * @param ItemsCalculatorInterface $itemsCalculator
      */
-    public function __construct(GeneratorInterface $next, ValueFromSchemaInterface $valueGenerator, ItemsCalculatorInterface $itemsCalculator)
-    {
+    public function __construct(
+        GeneratorInterface $next,
+        ValueFromSchemaInterface $valueGenerator,
+        ItemsCalculatorInterface $itemsCalculator
+    ) {
         $this->next = $next;
         $this->valueGenerator = $valueGenerator;
         $this->itemsCalculator = $itemsCalculator;
@@ -56,7 +59,8 @@ class ObjectAdditionalPropertiesGenerator implements GeneratorInterface
         // empty array is valid, but it would evaluate to false
         if ($additionalProperties !== false) {
 
-            $additionalPropertiesCnt = $this->itemsCalculator->getCount(count((array) $obj), $this->schemaAccessor->getMinProperties(), $this->schemaAccessor->getMaxProperties());
+            $additionalPropertiesCnt = $this->itemsCalculator->getCount(count((array)$obj),
+                $this->schemaAccessor->getMinProperties(), $this->schemaAccessor->getMaxProperties());
 
             for ($i = 0; $i < $additionalPropertiesCnt; $i++) {
                 $key = $this->getRandomPropertyName();
@@ -79,10 +83,6 @@ class ObjectAdditionalPropertiesGenerator implements GeneratorInterface
     {
         $str = md5(uniqid());
         $len = rand(1, 8);
-        $name = substr($str,0, $len);
-        if ($name === false) {
-            $name = 'random'.rand(1,1000);
-        }
-        return $name;
+        return substr($str, 0, $len);
     }
 }

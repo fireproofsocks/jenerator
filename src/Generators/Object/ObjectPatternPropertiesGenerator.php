@@ -16,9 +16,9 @@ class ObjectPatternPropertiesGenerator implements GeneratorInterface
     protected $next;
 
     /**
-     * @var ServiceContainerInterface
+     * @var ReverseRegexInterface
      */
-    protected $serviceContainer;
+    protected $reverseRegex;
 
     /**
      * @var JsonSchemaAccessorInterface
@@ -30,11 +30,11 @@ class ObjectPatternPropertiesGenerator implements GeneratorInterface
      */
     protected $valueGenerator;
 
-    public function __construct(GeneratorInterface $next, ServiceContainerInterface $serviceContainer)
+    public function __construct(GeneratorInterface $next, ValueFromSchemaInterface $valueGenerator, ReverseRegexInterface $reverseRegex)
     {
         $this->next = $next;
-        $this->serviceContainer = $serviceContainer;
-        $this->valueGenerator = $this->serviceContainer->make(ValueFromSchemaInterface::class);
+        $this->reverseRegex = $reverseRegex;
+        $this->valueGenerator = $valueGenerator;
     }
 
     /**
@@ -51,7 +51,7 @@ class ObjectPatternPropertiesGenerator implements GeneratorInterface
         if ($patternProperties !== false) {
             foreach ($patternProperties as $pattern => $subSchema) {
                 // check regular expressions!
-                $propertyName = $this->serviceContainer->make(ReverseRegexInterface::class)->getValueFromRegex($pattern);
+                $propertyName = $this->reverseRegex->getValueFromRegex($pattern);
                 $obj->{$propertyName} = $this->valueGenerator->getExampleValueFromSchema($subSchema);
             }
         }

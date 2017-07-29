@@ -4,12 +4,12 @@ namespace Jenerator\JsonSchemaAccessor;
 
 use Jenerator\Exceptions\SchemaAccessorException;
 use Jenerator\ReferenceResolver\ReferenceResolverInterface;
-use Pimple\Container;
+use Jenerator\ServiceContainerInterface;
 
 class JsonSchemaAccessorFactory implements JsonSchemaAccessorFactoryInterface
 {
     /**
-     * @var Container
+     * @var ServiceContainerInterface
      */
     protected $serviceContainer;
 
@@ -32,9 +32,9 @@ class JsonSchemaAccessorFactory implements JsonSchemaAccessorFactoryInterface
 
     /**
      * JsonSchemaAccessorFactory constructor.
-     * @param Container $serviceContainer
+     * @param ServiceContainerInterface $serviceContainer
      */
-    public function __construct(Container $serviceContainer)
+    public function __construct(ServiceContainerInterface $serviceContainer)
     {
         $this->serviceContainer = $serviceContainer;
         $this->referenceResolver = $this->serviceContainer->make(ReferenceResolverInterface::class);

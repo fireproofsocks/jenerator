@@ -1,5 +1,7 @@
 # Jenerator
 
+[![Build Status](https://travis-ci.org/fireproofsocks/jenerator.svg?branch=master)](https://travis-ci.org/fireproofsocks/jenerator) [![codecov](https://codecov.io/gh/fireproofsocks/jenerator/branch/master/graph/badge.svg)](https://codecov.io/gh/fireproofsocks/jenerator)
+
 This package generates JSON objects from [JSON Schema](http://json-schema.org/) definitions and fills them with random fake data.  This is useful for creating sample seed data that must be in a specific structure, e.g. useful for API 
 responses.
 
@@ -14,6 +16,11 @@ The recommended way to install this code is via [Composer](https://getcomposer.o
 
 ### In Code
 
+```php
+<?php
+require 'vendor/autoload.php';
+
+```
 
 ### Command Line
 
