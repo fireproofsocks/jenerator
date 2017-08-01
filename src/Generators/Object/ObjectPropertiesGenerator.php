@@ -15,11 +15,6 @@ class ObjectPropertiesGenerator implements GeneratorInterface
     protected $next;
 
     /**
-     * @var ServiceContainerInterface
-     */
-    protected $serviceContainer;
-
-    /**
      * @var JsonSchemaAccessorInterface
      */
     protected $schemaAccessor;
@@ -29,11 +24,10 @@ class ObjectPropertiesGenerator implements GeneratorInterface
      */
     protected $valueGenerator;
 
-    public function __construct(GeneratorInterface $next, ServiceContainerInterface $serviceContainer)
+    public function __construct(GeneratorInterface $next, ValueFromSchemaInterface $valueGenerator)
     {
         $this->next = $next;
-        $this->serviceContainer = $serviceContainer;
-        $this->valueGenerator = $this->serviceContainer->make(ValueFromSchemaInterface::class);
+        $this->valueGenerator = $valueGenerator;
     }
     /**
      * @inheritDoc

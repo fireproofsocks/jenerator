@@ -15,6 +15,7 @@ class ReverseRegexImproved implements ReverseRegexInterface
     {
         $this->generator = $regRev;
     }
+
     /**
      * @inheritDoc
      */

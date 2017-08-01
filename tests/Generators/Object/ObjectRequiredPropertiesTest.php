@@ -44,4 +44,22 @@ class ObjectRequiredPropertiesTest extends TestCase
 
         $this->assertEquals(2, count((array) $actual));
     }
+
+    public function testAdditionalProperties()
+    {
+        $instance = $this->getInstance();
+        $this->valueGenerator
+            ->shouldReceive('getExampleValueFromSchema')
+            ->andReturn('unrandom-string')
+            ->getMock();
+
+        $actual = $instance->getGeneratedFakeValue($this->getSchemaAccessor([
+            'required' => ['zzz'],
+            'additionalProperties' => [
+                'type' => 'string'
+            ]
+        ]));
+
+        $this->assertEquals((object) ['zzz' => 'unrandom-string'], $actual);
+    }
 }

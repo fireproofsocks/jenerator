@@ -46,7 +46,7 @@ class GeneratorProvider implements ServiceProviderInterface
             $next = new ObjectPatternPropertiesGenerator($next, $c[ValueFromSchemaInterface::class], $c[ReverseRegexInterface::class]);
             $next = new ObjectRequiredPropertiesGenerator($next, $c[ValueFromSchemaInterface::class]);
             $next = new ObjectAdditionalPropertiesGenerator($next, $c[ValueFromSchemaInterface::class], $c[ItemsCalculatorInterface::class]);
-            return new ObjectPropertiesGenerator($next, $c);
+            return new ObjectPropertiesGenerator($next, $c[ValueFromSchemaInterface::class]);
 
         };
         $container['generator_array'] = function ($c) {
